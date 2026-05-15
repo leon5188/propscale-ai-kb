@@ -5,11 +5,20 @@ import OpenAI from 'openai';
 
 export const maxDuration = 30;
 
-const openaiClient = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export async function POST(req: Request) {
+  // Move client initialization inside the handler to prevent build-time crashes
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return new Response('Missing OPENAI_API_KEY', { status: 500 });
+  }
+
+  const openaiClient = new OpenAI({ apiKey });
+  const index = getIndex();
+  
+  if (!index) {
+    return new Response('Vector database not initialized', { status: 500 });
+  }
+
   const { messages } = await req.json();
   const lastMessage = messages[messages.length - 1];
 
@@ -21,7 +30,6 @@ export async function POST(req: Request) {
   const embedding = embeddingResponse.data[0].embedding;
 
   // 2. Query Pinecone
-  const index = getIndex();
   const queryResponse = await index.query({
     vector: embedding,
     topK: 5,
@@ -45,5 +53,5 @@ export async function POST(req: Request) {
     messages,
   });
 
-  return result.toDataStreamResponse();
+  return (result as any).toDataStreamResponse();
 }

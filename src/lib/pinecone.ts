@@ -1,19 +1,25 @@
 import { Pinecone } from '@pinecone-database/pinecone';
 
 export const getPineconeClient = () => {
-  if (!process.env.PINECONE_API_KEY) {
-    throw new Error('PINECONE_API_KEY is not set');
+  const apiKey = process.env.PINECONE_API_KEY;
+  if (!apiKey) {
+    // During build time, we don't want to crash. 
+    // We only throw if this is actually called at runtime.
+    if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
+        throw new Error('PINECONE_API_KEY is not set');
+    }
+    return null;
   }
-  return new Pinecone({
-    apiKey: process.env.PINECONE_API_KEY,
-  });
+  return new Pinecone({ apiKey });
 };
 
 export const getIndex = () => {
   const indexName = process.env.PINECONE_INDEX_NAME;
-  if (!indexName) {
-    throw new Error('PINECONE_INDEX_NAME is not set');
-  }
   const pinecone = getPineconeClient();
+  
+  if (!pinecone || !indexName) {
+    return null;
+  }
+  
   return pinecone.index(indexName);
 };
