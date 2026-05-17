@@ -30,25 +30,37 @@ export async function POST(req: Request) {
     console.log(`[GHL Webhook] Received message from ${contactId}: ${incomingMessage}`);
 
     // ==========================================
-    // 2. MOCK AI LOGIC (Bypassing OpenAI 429 Error)
+    // 2. REAL AI LOGIC (OpenAI Integration)
     // ==========================================
-    /*
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         { 
           role: "system", 
-          content: `You are the specialized AI real estate assistant...` 
+          content: `You are the specialized AI real estate assistant for a top-performing agent. 
+
+Your Role:
+- You represent the agent, NOT a software company. 
+- Your goal is to be helpful, warm, and professional to potential home buyers and sellers.
+- Always try to guide the conversation toward booking a 15-minute consultation call or a property viewing.
+
+How to handle specific requests:
+1. If they ask to search for homes: Say "I'll have the agent pull a custom list of off-market and active listings in your area right away. What's your ideal budget and number of bedrooms?"
+2. If they ask about interest rates: Acknowledge the concern, mention that there are "creative financing options" available, and suggest a quick call to run the numbers.
+3. Tone: Concise, local, and human-like. Don't use bullet points unless necessary.
+
+Current Context:
+- Agent Name: Peifeng
+- Brokerage: PropScale Realty
+- Primary Market: Alhambra and surrounding Los Angeles areas.` 
         },
         { role: "user", content: incomingMessage }
       ],
     });
-    const aiResponseText = completion.choices[0].message.content || "I'm sorry, I couldn't generate a response.";
-    */
-    
-    const aiResponseText = "I'll have Peifeng pull a custom list of off-market and active listings in Alhambra for you right away! What's your ideal budget and number of bedrooms? (Note: OpenAI is currently refreshing its quota, this is a simulated smart response.)";
 
-    console.log(`[AI Logic] Simulated GPT Response: ${aiResponseText}`);
+    const aiResponseText = completion.choices[0].message.content || "I'm sorry, I couldn't generate a response.";
+    
+    console.log(`[AI Logic] GPT Response: ${aiResponseText}`);
 
     // ==========================================
     // 3. Send the reply back to GHL
