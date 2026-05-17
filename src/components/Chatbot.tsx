@@ -60,6 +60,16 @@ export default function Chatbot() {
                   </div>
                   <div className={`p-3 rounded-2xl text-sm ${m.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none shadow-sm'}`}>
                     {m.content}
+                    {m.toolInvocations?.map((toolInvocation) => {
+                      const toolCallId = toolInvocation.toolCallId;
+                      const addressee = toolInvocation.toolName === 'saveLeadInfo' ? '正在保存您的联系信息...' : '正在处理...';
+
+                      return (
+                        <div key={toolCallId} className="italic text-xs text-blue-500 mt-2">
+                          {addressee}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
