@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const GHL_API_TOKEN = process.env.GHL_API_TOKEN || "pit-9b9f29c2-152d-454c-bdf7-e9ed6571f040";
+const GHL_API_TOKEN = process.env.GHL_API_TOKEN;
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
