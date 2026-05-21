@@ -139,7 +139,12 @@ ${contextText}`
 
     if (!ghlResponse.ok) {
       console.error("[GHL API Error]", responseData);
-      return NextResponse.json({ error: "Failed to send message via GHL API", details: responseData }, { status: 500 });
+      // Return 200 to prevent webhook failure loops when GHL rejects due to DND
+      return NextResponse.json({ 
+        success: false, 
+        error: "Failed to send message via GHL API (likely DND active)", 
+        details: responseData 
+      }, { status: 200 });
     }
 
     return NextResponse.json({ success: true, messageId: responseData.id || "sent" });
