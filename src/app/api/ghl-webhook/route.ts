@@ -31,6 +31,17 @@ export async function POST(req: Request) {
     console.log(`[GHL Webhook] Received message from ${contactId}: ${incomingMessage}`);
 
     // ==========================================
+    // 1.1 STOP/BOUNCE MESSAGE FILTERING
+    // ==========================================
+    const normalizedMessage = incomingMessage.toLowerCase().trim();
+    if (normalizedMessage === 'stop' || 
+        normalizedMessage.includes('mailbox that is not actively monitored') || 
+        normalizedMessage.includes('not correspond to a valid address')) {
+      console.log(`[GHL Webhook] Ignored DND/bounce message from ${contactId}`);
+      return NextResponse.json({ success: true, ignored: true, reason: "DND or bounce message detected" });
+    }
+
+    // ==========================================
     // 1.5 KNOWLEDGE BASE RETRIEVAL (RAG)
     // ==========================================
     let contextText = "";
