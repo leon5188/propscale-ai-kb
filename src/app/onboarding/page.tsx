@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Bot, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function OnboardingPortal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,6 +45,7 @@ export default function OnboardingPortal() {
         setErrorMsg(data.error || "Failed to configure workspace.");
       }
     } catch (error) {
+      console.error("Onboarding failed:", error);
       setErrorMsg("A network error occurred.");
     } finally {
       setIsSubmitting(false);
@@ -62,9 +64,9 @@ export default function OnboardingPortal() {
             Your PropScale AI agent has been localized to {formData.cityMarket}. 
             Your 12-month follow-up scripts have been updated with your name ({formData.agentName}).
           </p>
-          <a href="/" className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700">
+          <Link href="/" className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700">
             Go to Dashboard <ArrowRight className="w-4 h-4 ml-2" />
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -79,7 +81,7 @@ export default function OnboardingPortal() {
           </div>
           <h1 className="text-3xl font-extrabold text-gray-900">Welcome to PropScale AI</h1>
           <p className="mt-4 text-lg text-gray-600">
-            Let's configure your "Black Box" CRM. Fill out these details and our system will automatically localize your AI assistant and 12-month follow-up scripts in seconds.
+            Let&apos;s configure your &quot;Black Box&quot; CRM. Fill out these details and our system will automatically localize your AI assistant and 12-month follow-up scripts in seconds.
           </p>
         </div>
 

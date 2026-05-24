@@ -13,7 +13,7 @@ const Hero = () => {
                 <span>Reclaim 13+ Hours Every Week</span>
               </div>
               <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Stop Losing Deals to <span className="text-blue-600">"Admin Hemorrhage."</span>
+                Stop Losing Deals to <span className="text-blue-600">&quot;Admin Hemorrhage.&quot;</span>
               </h1>
               <p className="text-xl text-gray-600 mb-10 leading-relaxed">
                 You became an agent to close deals, not to manually text leads for a year. 
@@ -65,9 +65,9 @@ const Hero = () => {
                   </div>
                   <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
                     <div className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Automated SMS - Day 184</div>
-                    <p className="text-sm text-gray-600 italic">"Hey [Name], just checking in on your home search. Still looking in the area?"</p>
+                    <p className="text-sm text-gray-600 italic">&quot;Hey [Name], just checking in on your home search. Still looking in the area?&quot;</p>
                   </div>
-                  <div className="flex justify-end text-xs text-blue-500 font-bold">Response: "Yes, actually! Let's talk tomorrow."</div>
+                  <div className="flex justify-end text-xs text-blue-500 font-bold">Response: &quot;Yes, actually! Let&apos;s talk tomorrow.&quot;</div>
                   <div className="p-4 bg-green-50 rounded-xl border border-green-100">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-bold text-green-700">Lead Reactivated</span>

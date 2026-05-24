@@ -32,9 +32,9 @@ const Tech = () => {
             Plug-and-Play Power with GoHighLevel.
           </h2>
           <p className="text-xl text-gray-600">
-            We've done the heavy lifting. You just fill in the blanks and let the 
+            We&apos;ve done the heavy lifting. You just fill in the blanks and let the 
             engine run. PropScale AI is built to be the most friction-less automation 
-            you've ever used.
+            you&apos;ve ever used.
           </p>
         </div>
 

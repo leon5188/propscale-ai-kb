@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { 
   Users, 
@@ -13,31 +13,45 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 
+interface DashboardStats {
+  totalLeads: number;
+  aiRepliesToday: number;
+  appointmentsBooked: number;
+  systemHealth: {
+    ghl: string;
+    vercel: string;
+    pinecone: string;
+  };
+}
+
 function DashboardContent() {
   const searchParams = useSearchParams();
   // GHL will pass ?location=xyz when embedded via Custom Menu Link
   const locationId = searchParams.get('location') || 'dcJGZR1L77vJd0rvaNI5'; 
 
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchStats = async () => {
-    setLoading(true);
+  const fetchStats = useCallback(async () => {
     try {
+      setLoading(true);
       // Pass the location ID to our API so it fetches data for the correct sub-account
       const res = await fetch(`/api/dashboard-stats?locationId=${locationId}`);
       const data = await res.json();
       setStats(data);
     } catch (e) {
-      console.error("Failed to load stats");
+      console.error("Failed to load stats", e);
     } finally {
       setLoading(false);
     }
-  };
+  }, [locationId]);
 
   useEffect(() => {
-    fetchStats();
-  }, [locationId]);
+    const timer = setTimeout(() => {
+      fetchStats();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [fetchStats]);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 p-6 md:p-12 font-sans text-left">
@@ -114,7 +128,7 @@ function DashboardContent() {
               <div className="flex items-center justify-between text-xs">
                 <span className="text-slate-500">GHL Connection</span>
                 <span className={`font-bold ${stats?.systemHealth.ghl === 'connected' ? 'text-emerald-400' : 'text-red-400'}`}>
-                  {stats?.systemHealth.ghl.toUpperCase()}
+                  {stats?.systemHealth.ghl.toUpperCase() || 'OFFLINE'}
                 </span>
               </div>
               <div className="flex items-center justify-between text-xs">
@@ -147,7 +161,7 @@ function DashboardContent() {
                     <span className="font-bold">Leon Sun</span>
                     <span className="text-slate-500 text-[10px]">Just now</span>
                   </div>
-                  <p className="text-slate-300 italic">"Can you find me a 3-bedroom house in Alhambra?"</p>
+                  <p className="text-slate-300 italic">&quot;Can you find me a 3-bedroom house in Alhambra?&quot;</p>
                   <div className="mt-3 flex items-center gap-2 text-indigo-400 font-medium">
                     <Bot className="w-4 h-4" />
                     <span className="text-xs">PropScale AI replied with custom listings...</span>
@@ -161,7 +175,7 @@ function DashboardContent() {
                     <span className="font-bold">John Doe</span>
                     <span className="text-slate-500 text-[10px]">14 mins ago</span>
                   </div>
-                  <p className="text-slate-300 italic">"What is the interest rate trend?"</p>
+                  <p className="text-slate-300 italic">&quot;What is the interest rate trend?&quot;</p>
                 </div>
               </div>
             </div>

@@ -1,12 +1,29 @@
 import { NextResponse } from 'next/server';
 
+interface GHLPipeline {
+  id: string;
+  name: string;
+  stages: { id: string; name: string }[];
+}
+
+interface GHLOpportunity {
+  id: string;
+  monetaryValue?: number;
+  status: string;
+  updatedAt: string;
+  createdAt: string;
+  pipelineStageId: string;
+  source?: string;
+  contact?: { name?: string };
+  effectiveProbability?: number;
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const pipelineId = searchParams.get('pipelineId');
   const queryLocationId = searchParams.get('location_id');
   
   const apiKey = process.env.GHL_API_KEY;
-  // Use the dynamic location ID from the URL if provided, otherwise fallback to the default env variable
   const locationId = queryLocationId || process.env.GHL_LOCATION_ID;
 
   if (!apiKey || !locationId) {
@@ -19,12 +36,12 @@ export async function GET(request: Request) {
       headers: { 'Authorization': `Bearer ${apiKey}`, 'Version': '2021-07-28', 'Accept': 'application/json' }
     });
     const pipeData = await pipeRes.json();
-    const allPipelines = pipeData.pipelines || [];
+    const allPipelines: GHLPipeline[] = pipeData.pipelines || [];
     const stageMap: Record<string, string> = {};
-    allPipelines.forEach((p: any) => p.stages.forEach((s: any) => { stageMap[s.id] = s.name; }));
+    allPipelines.forEach((p) => p.stages.forEach((s) => { stageMap[s.id] = s.name; }));
 
     // 2. Opportunities (Safely wrapped)
-    let opportunities = [];
+    let opportunities: GHLOpportunity[] = [];
     try {
       const oppsUrl = `https://services.leadconnectorhq.com/opportunities/search?location_id=${locationId}${pipelineId ? `&pipeline_id=${pipelineId}` : ''}&limit=100`;
       const oppsRes = await fetch(oppsUrl, {
@@ -68,7 +85,7 @@ export async function GET(request: Request) {
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
-    const processedOpps = opportunities.map((o: any) => {
+    const processedOpps = opportunities.map((o) => {
       const value = o.monetaryValue || 5000; // Simulated fallback
       const updatedAt = new Date(o.updatedAt);
       const createdAt = new Date(o.createdAt);
@@ -87,7 +104,7 @@ export async function GET(request: Request) {
 
     // 3. Performance Chart
     const monthlyData: Record<string, { pipeline: number, revenue: number }> = {};
-    processedOpps.forEach((o: any) => {
+    processedOpps.forEach((o) => {
       const month = new Date(o.createdAt).toLocaleString('default', { month: 'short' });
       if (!monthlyData[month]) monthlyData[month] = { pipeline: 0, revenue: 0 };
       if (o.status === 'open') monthlyData[month].pipeline += o.computedValue;
@@ -106,7 +123,7 @@ export async function GET(request: Request) {
     // 4. Source & Funnel
     const sourceCounts: Record<string, number> = {};
     const stageCounts: Record<string, number> = {};
-    processedOpps.forEach((o: any) => {
+    processedOpps.forEach((o) => {
       const source = o.source || 'Other';
       sourceCounts[source] = (sourceCounts[source] || 0) + 1;
       const stage = stageMap[o.pipelineStageId] || 'Unknown';
@@ -126,8 +143,7 @@ export async function GET(request: Request) {
         const conversations = convData.conversations || [];
         
         if (conversations.length > 0) {
-          // Identify 'Replied' by checking if the last message was inbound or unread count
-          const repliedCount = conversations.filter((c: any) => 
+          const repliedCount = (conversations as { unreadCount: number, lastMessageDirection: string }[]).filter((c) => 
             c.unreadCount > 0 || c.lastMessageDirection === 'inbound'
           ).length;
           
@@ -170,6 +186,7 @@ export async function GET(request: Request) {
     });
 
   } catch (error) {
+    console.error("Analytics aggregation error", error);
     return NextResponse.json({ error: 'Failed' }, { status: 500 });
   }
 }

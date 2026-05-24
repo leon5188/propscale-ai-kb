@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, MessageSquare, Mail, Calendar, ShieldCheck } from 'lucide-react';
+import { MessageSquare, Mail, Calendar, ShieldCheck } from 'lucide-react';
 
 const Solution = () => {
   const features = [
@@ -39,14 +39,14 @@ const Solution = () => {
                   <span className="text-xs font-mono opacity-50 ml-2">propscale-ai-engine.config</span>
                 </div>
                 <div className="space-y-6 font-mono text-sm">
-                  <div className="text-blue-300">// Day 1: Instant Outreach</div>
-                  <div className="text-white">trigger: "New Lead" -{">"} send_sms("Thanks for looking!")</div>
+                  <div className="text-blue-300">{"//"} Day 1: Instant Outreach</div>
+                  <div className="text-white">trigger: &quot;New Lead&quot; -{">"} send_sms(&quot;Thanks for looking!&quot;)</div>
                   
-                  <div className="text-blue-300">// Day 45: Long-term Nurture</div>
-                  <div className="text-white">trigger: "No Response" -{">"} send_email("Market update for you...")</div>
+                  <div className="text-blue-300">{"//"} Day 45: Long-term Nurture</div>
+                  <div className="text-white">trigger: &quot;No Response&quot; -{">"} send_email(&quot;Market update for you...&quot;)</div>
                   
-                  <div className="text-blue-300">// Day 180: The 'Still Interested?' Check</div>
-                  <div className="text-white">trigger: "6 Months Idle" -{">"} send_sms("Still thinking of moving?")</div>
+                  <div className="text-blue-300">{"//"} Day 180: The &apos;Still Interested?&apos; Check</div>
+                  <div className="text-white">trigger: &quot;6 Months Idle&quot; -{">"} send_sms(&quot;Still thinking of moving?&quot;)</div>
                   
                   <div className="flex items-center text-green-400">
                     <span className="mr-2">●</span> Active: 365 Days of Automation
@@ -63,8 +63,8 @@ const Solution = () => {
                 <span className="text-blue-600">PropScale AI.</span>
               </h2>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                We've built the ultimate 12-month nurture engine inside GoHighLevel. 
-                It's not just a set of scripts; it's a conversion machine that never sleeps, 
+                We&apos;ve built the ultimate 12-month nurture engine inside GoHighLevel. 
+                It&apos;s not just a set of scripts; it&apos;s a conversion machine that never sleeps, 
                 never forgets, and never gets tired of following up.
               </p>
               

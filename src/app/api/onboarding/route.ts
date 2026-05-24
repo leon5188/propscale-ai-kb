@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     ];
 
     let successCount = 0;
-    let errors = [];
+    const errors: { name: string; error: unknown }[] = [];
 
     // Loop through and update/create each custom value via GHL API v2
     // Note: The POST endpoint creates new values. If they already exist, you might need to use a PUT/Update endpoint and their specific CV IDs.
@@ -68,8 +68,9 @@ export async function POST(req: Request) {
       details: { successCount, errors }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
     console.error("[Onboarding API Error]", error);
-    return NextResponse.json({ error: "Internal Server Error", details: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error", details: message }, { status: 500 });
   }
 }

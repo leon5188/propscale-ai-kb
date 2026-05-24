@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertCircle, XCircle, Timer, TrendingDown } from 'lucide-react';
+import { AlertCircle, Timer, TrendingDown } from 'lucide-react';
 
 const Problem = () => {
   const issues = [
@@ -25,7 +25,7 @@ const Problem = () => {
       <div className="container mx-auto px-6">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-6">
-            The 13 Hours You'll Never Get Back.
+            The 13 Hours You&apos;ll Never Get Back.
           </h2>
           <p className="text-xl text-gray-600">
             Real estate is a relationship business. So why are you spending half your 

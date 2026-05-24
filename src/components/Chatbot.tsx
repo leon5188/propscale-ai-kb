@@ -49,7 +49,7 @@ export default function Chatbot() {
             {messages.length === 0 && (
               <div className="text-center py-10 text-gray-500">
                 <Bot className="mx-auto mb-2 opacity-20" size={48} />
-                <p>Hi! I'm the PropScale AI assistant. How can I help you today?</p>
+                <p>Hi! I&apos;m the PropScale AI assistant. How can I help you today?</p>
               </div>
             )}
             {messages.map((m) => (

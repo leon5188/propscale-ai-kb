@@ -37,12 +37,13 @@ export async function GET(req: Request) {
     const results = queryResponse.matches.map((match) => ({
       id: match.id,
       score: match.score,
-      text: (match.metadata as any)?.text,
-      source: (match.metadata as any)?.source,
+      text: (match.metadata as { text?: string })?.text,
+      source: (match.metadata as { source?: string })?.source,
     }));
 
     return NextResponse.json({ results });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

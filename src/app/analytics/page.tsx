@@ -4,8 +4,6 @@ import * as React from "react"
 import {
   Area,
   AreaChart,
-  Bar,
-  BarChart,
   CartesianGrid,
   Cell,
   ResponsiveContainer,
@@ -24,7 +22,6 @@ import {
   Filter,
   MoreHorizontal,
   Target,
-  TrendingUp,
   Loader2,
   LayoutDashboard,
   Zap,
@@ -59,7 +56,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -75,6 +71,54 @@ interface Deal {
   lastTouchpoint: string
 }
 
+interface MetricData {
+  weightedPipeline: number
+  closedGCI: number
+  avgCycle: string
+  decayRate: string
+  weeklyAppointments: number
+  smsReplyRate: string
+}
+
+interface ChartDataPoint {
+  month: string
+  pipeline: number
+  revenue: number
+}
+
+interface SourceDataPoint {
+  name: string
+  value: number
+}
+
+interface FunnelDataPoint {
+  stage: string
+  value: number
+}
+
+interface Insight {
+  type: 'warning' | 'opportunity' | 'info'
+  text: string
+  action: string
+}
+
+interface Pipeline {
+  id: string
+  name: string
+}
+
+interface AnalyticsData {
+  metrics: MetricData
+  charts: {
+    performance: ChartDataPoint[]
+    funnel: FunnelDataPoint[]
+    sources: SourceDataPoint[]
+  }
+  table: Deal[]
+  pipelines: Pipeline[]
+  aiInsights: Insight[]
+}
+
 // --- Helpers ---
 
 const formatCurrency = (value: number) => {
@@ -87,7 +131,7 @@ const formatCurrency = (value: number) => {
 
 const COLORS = ["#2563eb", "#10b981", "#6366f1", "#f59e0b", "#8b5cf6", "#ec4899"]
 
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }: any) => {
+const renderCustomizedLabel = ({ cx, cy, midAngle, outerRadius, percent, name }: { cx: number, cy: number, midAngle: number, outerRadius: number, percent: number, name: string }) => {
   const RADIAN = Math.PI / 180;
   const radius = outerRadius + 25;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -110,7 +154,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 // --- Main Component ---
 
 export default function AnalyticsDashboard() {
-  const [data, setData] = React.useState<any>(null)
+  const [data, setData] = React.useState<AnalyticsData | null>(null)
   const [isLoading, setIsLoading] = React.useState(true)
   const [selectedPipelineId, setSelectedPipelineId] = React.useState("")
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -151,7 +195,7 @@ export default function AnalyticsDashboard() {
     const headers = ["Contact Name", "Stage", "Value", "Probability", "Last Touchpoint"]
     const csvContent = [
       headers.join(","),
-      ...data.table.map((row: any) => 
+      ...data.table.map((row) => 
         `"${row.contactName}","${row.stage}",${row.dealValue},${row.probability}%,"${row.lastTouchpoint}"`
       )
     ].join("\n")
@@ -255,13 +299,13 @@ export default function AnalyticsDashboard() {
            <Zap className="h-8 w-8 text-red-600" />
         </div>
         <div className="text-2xl font-bold text-gray-900">Connection Interrupted</div>
-        <p className="max-w-xs text-center text-gray-500 font-medium">We couldn't reach your GHL account. Please verify your API credentials.</p>
+        <p className="max-w-xs text-center text-gray-500 font-medium">We couldn&apos;t reach your GHL account. Please verify your API credentials.</p>
         <Button size="lg" className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200" onClick={() => window.location.reload()}>Retry Connection</Button>
       </div>
     )
   }
 
-  const selectedPipelineName = data?.pipelines?.find((p: any) => p.id === selectedPipelineId)?.name || "All Pipelines"
+  const selectedPipelineName = data?.pipelines?.find((p) => p.id === selectedPipelineId)?.name || "All Pipelines"
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] p-4 lg:p-8">
@@ -287,7 +331,7 @@ export default function AnalyticsDashboard() {
                 <DropdownMenuContent className="rounded-xl p-2 border-gray-100 shadow-xl w-56">
                   <DropdownMenuItem onClick={() => setSelectedPipelineId("")} className="rounded-lg font-medium">All Pipelines</DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-gray-50" />
-                  {data?.pipelines?.map((pipe: any) => (
+                  {data?.pipelines?.map((pipe) => (
                     <DropdownMenuItem key={pipe.id} onClick={() => setSelectedPipelineId(pipe.id)} className="rounded-lg font-medium">
                       {pipe.name}
                     </DropdownMenuItem>
@@ -419,7 +463,7 @@ export default function AnalyticsDashboard() {
                           dataKey="value"
                           label={renderCustomizedLabel}
                         >
-                          {(data?.charts?.sources || []).map((entry: any, index: number) => (
+                          {(data?.charts?.sources || []).map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="none" />
                           ))}
                         </Pie>
@@ -480,7 +524,7 @@ export default function AnalyticsDashboard() {
               <h3 className="font-black text-gray-900 uppercase tracking-tighter">AI Command Insights</h3>
             </div>
             
-            {data?.aiInsights?.map((insight: any, i: number) => (
+            {data?.aiInsights?.map((insight, i) => (
               <Card key={i} className="rounded-3xl border-none shadow-lg shadow-blue-50 bg-gradient-to-br from-white to-blue-50/30 overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-start justify-between">
@@ -533,7 +577,7 @@ export default function AnalyticsDashboard() {
   )
 }
 
-function MetricCard({ title, value, description, trend, progress, progressLabel, icon }: any) {
+function MetricCard({ title, value, description, trend, progress, progressLabel, icon }: { title: string, value: string | number, description?: string, trend?: 'up' | 'down' | 'neutral', progress?: number, progressLabel?: string, icon: React.ReactNode }) {
   return (
     <Card className="rounded-3xl shadow-lg shadow-gray-100/50 border-gray-100/50 bg-white hover:shadow-xl transition-all duration-300 group">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

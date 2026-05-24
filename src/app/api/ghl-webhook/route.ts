@@ -74,8 +74,8 @@ export async function POST(req: Request) {
         // Format the retrieved context
         const relevantChunks = queryResponse.matches
           .filter(match => match.score && match.score > 0.3) // Basic relevance threshold
-          .map(match => (match.metadata as any)?.text)
-          .filter(Boolean);
+          .map(match => (match.metadata as { text?: string })?.text)
+          .filter(Boolean) as string[];
         
         if (relevantChunks.length > 0) {
           contextText = "Use the following local real estate knowledge to answer the user if relevant:\n" + relevantChunks.join("\n---\n");
@@ -158,12 +158,12 @@ ${contextText}`
 
     return NextResponse.json({ success: true, messageId: responseData.id || "sent" });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
     console.error("[Webhook Error]", error);
     return NextResponse.json({ 
       error: "Internal Server Error", 
-      message: error.message,
-      stack: error.stack 
+      message
     }, { status: 500 });
   }
 }

@@ -3,9 +3,16 @@
 import { useState } from 'react';
 import { Search, Loader2, ExternalLink } from 'lucide-react';
 
+interface SearchResult {
+  id: string;
+  score: number;
+  text: string;
+  source: string;
+}
+
 export default function InternalSearch() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -29,7 +36,7 @@ export default function InternalSearch() {
       <div className="max-w-5xl mx-auto">
         <header className="mb-12">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Internal Knowledge Search</h1>
-          <p className="text-gray-600">Search through PropScale AI's indexed knowledge base.</p>
+          <p className="text-gray-600">Search through PropScale AI&apos;s indexed knowledge base.</p>
         </header>
 
         <form onSubmit={handleSearch} className="mb-8">
@@ -79,7 +86,7 @@ export default function InternalSearch() {
             ))
           ) : query && !isLoading ? (
             <div className="text-center py-20 text-gray-500">
-              No results found for "{query}"
+              No results found for &quot;{query}&quot;
             </div>
           ) : null}
         </div>
