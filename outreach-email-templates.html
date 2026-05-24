@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  .email-container {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+  }
+  .header {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2563eb;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .content {
+    padding: 30px 20px;
+    color: #374151;
+    line-height: 1.6;
+    font-size: 16px;
+  }
+  .highlight-box {
+    background-color: #eff6ff;
+    border-left: 4px solid #2563eb;
+    padding: 15px;
+    margin: 20px 0;
+    font-style: italic;
+  }
+  .footer {
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    font-size: 12px;
+    color: #9ca3af;
+  }
+  .cta-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #2563eb;
+    color: #ffffff !important;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<!-- TEMPLATE 1 -->
+<div class="email-container">
+  <div class="header">
+    <div class="logo">PropScale AI</div>
+  </div>
+  <div class="content">
+    <p>Hi {{ contact.first_name }},</p>
+    <p>I was looking at your recent listings in <strong>{{ contact.city }}</strong> and noticed something interesting.</p>
+    <p>Most agents are losing nearly 40% of their leads simply because they can't reply within that 2-minute window when a buyer is most active.</p>
+    <div class="highlight-box">
+      "I spent the morning building a custom <strong>AI Brain</strong> specifically for your {{ contact.city }} listings. It uses GPT-4 to instantly handle SMS inquiries with hyper-local knowledge."
+    </div>
+    <p>I have a 30-second live demo working with your name on it. Should I send the link over so you can see how it handles your leads?</p>
+    <p>Best regards,<br><strong>Peifeng</strong><br>Founder, PropScale AI</p>
+  </div>
+  <div class="footer">
+    &copy; 2026 PropScale AI. All rights reserved.
+  </div>
+</div>
+
+<br><br><hr><br><br>
+
+<!-- TEMPLATE 2 -->
+<div class="email-container">
+  <div class="header">
+    <div class="logo">PropScale AI</div>
+  </div>
+  <div class="content">
+    <p>Hey {{ contact.first_name }},</p>
+    <p>Just following up on that AI assistant I built for your team.</p>
+    <p>Imagine a lead texts you at 11 PM asking about school districts while you're out with family. Usually, that lead is cold by morning.</p>
+    <p>With the <strong>"Black Box"</strong> system I set up for you:</p>
+    <ul>
+      <li>AI replies within 15 seconds.</li>
+      <li>Qualifies their budget & timeline.</li>
+      <li>Books them directly onto your calendar.</li>
+    </ul>
+    <p>Would it be worth a 5-minute chat this week to show you the dashboard?</p>
+    <a href="https://calendly.com/propscale-ai" class="cta-button">View My Calendar</a>
+    <p><br>Cheers,<br><strong>Peifeng</strong></p>
+  </div>
+</div>
+
+<br><br><hr><br><br>
+
+<!-- TEMPLATE 3 -->
+<div class="email-container">
+  <div class="header">
+    <div class="logo">PropScale AI</div>
+  </div>
+  <div class="content">
+    <p>{{ contact.first_name }},</p>
+    <p>I haven't heard back, so I'm assuming AI automation isn't a top priority for your business right now. Totally understand!</p>
+    <p>I'll go ahead and take down the custom demo I built for your market so I can free up the server space for another agent in the area.</p>
+    <p>If your goals change and you want to scale your follow-up to 100% automation, you know where to find me.</p>
+    <p>Wishing you a massive close to the quarter!</p>
+    <p>Best,<br><strong>Peifeng</strong></p>
+  </div>
+</div>
+
+</body>
+</html>

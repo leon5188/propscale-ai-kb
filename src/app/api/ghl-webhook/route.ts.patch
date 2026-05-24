@@ -1,0 +1,16 @@
+--- /Users/peifengni/propscale-ai-kb/src/app/api/ghl-webhook/route.ts
++++ /Users/peifengni/propscale-ai-kb/src/app/api/ghl-webhook/route.ts
+@@ -136,7 +136,11 @@
+ 
+     if (!ghlResponse.ok) {
+       console.error("[GHL API Error]", responseData);
+-      return NextResponse.json({ error: "Failed to send message via GHL API", details: responseData }, { status: 500 });
++      // If GHL rejects the message (e.g. because the contact opted out but sent a message anyway), don't crash.
++      return NextResponse.json({ 
++        success: false, 
++        reason: "GHL API rejected the outbound message (likely DND/opt-out status)", 
++        details: responseData 
++      }, { status: 200 }); // Return 200 to Vercel so the webhook doesn't show as failed in logs
+     }
+ 
+     return NextResponse.json({ success: true, messageId: responseData.id || "sent" });
