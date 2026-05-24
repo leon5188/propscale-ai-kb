@@ -3,11 +3,20 @@ import OpenAI from 'openai';
 import { getIndex } from '@/lib/pinecone'; // Added Pinecone import
 
 const GHL_API_TOKEN = process.env.GHL_API_TOKEN;
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
+  const openaiApiKey = process.env.OPENAI_API_KEY;
+  if (!openaiApiKey) {
+    console.error("[GHL Webhook] Missing OPENAI_API_KEY");
+    return NextResponse.json({ error: "Configuration error" }, { status: 500 });
+  }
+
+  const openai = new OpenAI({
+    apiKey: openaiApiKey,
+  });
+
   try {
     const body = await req.json();
     

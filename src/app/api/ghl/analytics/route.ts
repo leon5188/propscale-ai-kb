@@ -3,8 +3,11 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const pipelineId = searchParams.get('pipelineId');
+  const queryLocationId = searchParams.get('location_id');
+  
   const apiKey = process.env.GHL_API_KEY;
-  const locationId = process.env.GHL_LOCATION_ID;
+  // Use the dynamic location ID from the URL if provided, otherwise fallback to the default env variable
+  const locationId = queryLocationId || process.env.GHL_LOCATION_ID;
 
   if (!apiKey || !locationId) {
     return NextResponse.json({ error: 'Missing configuration' }, { status: 400 });

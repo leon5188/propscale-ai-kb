@@ -121,9 +121,17 @@ export default function AnalyticsDashboard() {
     async function fetchData() {
       setIsLoading(true)
       try {
-        const url = selectedPipelineId 
+        const queryParams = new URLSearchParams(window.location.search);
+        const locId = queryParams.get('location_id');
+        
+        let url = selectedPipelineId 
           ? `/api/ghl/analytics?pipelineId=${selectedPipelineId}` 
           : '/api/ghl/analytics'
+          
+        if (locId) {
+          url += (url.includes('?') ? '&' : '?') + `location_id=${locId}`
+        }
+
         const res = await fetch(url)
         const json = await res.json()
         setData(json)
@@ -160,7 +168,8 @@ export default function AnalyticsDashboard() {
   }
 
   const openGHLCrm = () => {
-    const locationId = "dcJGZR1L77vJd0rvaNI5"
+    const queryParams = new URLSearchParams(window.location.search);
+    const locationId = queryParams.get('location_id') || "dcJGZR1L77vJd0rvaNI5"
     window.open(`https://app.gohighlevel.com/v2/location/${locationId}/opportunities/list`, "_blank")
   }
 
@@ -491,7 +500,9 @@ export default function AnalyticsDashboard() {
                       variant="secondary" 
                       onClick={() => {
                         if (insight.action.includes('Nudge')) {
-                          window.open(`https://app.gohighlevel.com/v2/location/dcJGZR1L77vJd0rvaNI5/conversations`, "_blank")
+                          const queryParams = new URLSearchParams(window.location.search);
+                          const locationId = queryParams.get('location_id') || "dcJGZR1L77vJd0rvaNI5";
+                          window.open(`https://app.gohighlevel.com/v2/location/${locationId}/conversations`, "_blank")
                         } else {
                           openGHLCrm()
                         }
