@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { getIndex } from '@/lib/pinecone'; // Added Pinecone import
+import { getIndex } from '@/lib/pinecone';
+import { getGHLContact, getGHLLocation } from '@/lib/ghl';
 
 const GHL_API_TOKEN = process.env.GHL_API_TOKEN;
 
@@ -20,7 +21,9 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     
+    // Extract Contact and Location IDs
     const contactId = body.contact_id || (body.customData && body.customData.contact_id);
+    const locationId = body.location_id || (body.location && body.location.id) || (body.customData && body.customData.location_id);
     
     let incomingMessage = "";
     if (body.customData) {
@@ -37,7 +40,51 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing contact ID or message" }, { status: 400 });
     }
 
-    console.log(`[GHL Webhook] Received message from ${contactId}: ${incomingMessage}`);
+    console.log(`[GHL Webhook] Received message from ${contactId} in ${locationId}: ${incomingMessage}`);
+
+    // ==========================================
+    // 1.0 DYNAMIC IDENTITY & PROPERTY DATA
+    // ==========================================
+    let agentName = "the agent";
+    let companyName = "PropScale Realty";
+    let propertyInfo = "";
+
+    try {
+      // Parallel fetch for better performance
+      const [contactData, locationData] = await Promise.all([
+        getGHLContact(contactId),
+        locationId ? getGHLLocation(locationId) : Promise.resolve(null)
+      ]);
+
+      if (locationData && locationData.location) {
+        companyName = locationData.location.name || companyName;
+        // Try to identify agent name
+        agentName = locationData.location.firstName || "the team";
+      }
+
+      if (contactData && contactData.contact) {
+        const contact = contactData.contact;
+        const address = contact.address1 || "";
+        const customFields = contact.customFields || [];
+        
+        let fieldDetails = [];
+        if (address) fieldDetails.push(`Address: ${address}`);
+        
+        // Map common property data if available
+        for (const field of customFields) {
+          // Look for Zestimate or common property identifiers
+          if (typeof field.value === 'string' && (field.value.startsWith('$') || !isNaN(Number(field.value)))) {
+            fieldDetails.push(`Property Insight (${field.id}): ${field.value}`);
+          }
+        }
+        
+        if (fieldDetails.length > 0) {
+          propertyInfo = `\n\nLEAD PROPERTY DATA:\n${fieldDetails.join('\n')}\n(Note: Use this data to provide instant value if they ask about their home.)`;
+        }
+      }
+    } catch (dataError) {
+      console.error("[GHL Data Error] Failed to fetch dynamic context:", dataError);
+    }
 
     // ==========================================
     // 1.1 STOP/BOUNCE MESSAGE FILTERING
@@ -57,38 +104,29 @@ export async function POST(req: Request) {
     try {
       const index = getIndex();
       if (index) {
-        // Embed the user's message
         const embeddingResponse = await openai.embeddings.create({
           model: 'text-embedding-3-small',
           input: incomingMessage,
         });
         const embedding = embeddingResponse.data[0].embedding;
 
-        // Query Pinecone
         const queryResponse = await index.query({
           vector: embedding,
-          topK: 3, // Get top 3 most relevant chunks
+          topK: 3,
           includeMetadata: true,
         });
 
-        // Format the retrieved context
         const relevantChunks = queryResponse.matches
-          .filter(match => match.score && match.score > 0.3) // Basic relevance threshold
+          .filter(match => match.score && match.score > 0.3)
           .map(match => (match.metadata as { text?: string })?.text)
           .filter(Boolean) as string[];
         
         if (relevantChunks.length > 0) {
-          contextText = "Use the following local real estate knowledge to answer the user if relevant:\n" + relevantChunks.join("\n---\n");
-          console.log(`[RAG] Retrieved ${relevantChunks.length} relevant chunks from Knowledge Base.`);
-        } else {
-          console.log("[RAG] No highly relevant chunks found.");
+          contextText = "Use the following local real estate knowledge if relevant:\n" + relevantChunks.join("\n---\n");
         }
-      } else {
-        console.warn("[RAG] Pinecone index not initialized (missing env variables).");
       }
     } catch (ragError) {
       console.error("[RAG Error] Failed to retrieve context:", ragError);
-      // We don't throw here; we want the AI to still answer even if RAG fails
     }
 
     // ==========================================
@@ -99,22 +137,18 @@ export async function POST(req: Request) {
       messages: [
         { 
           role: "system", 
-          content: `You are the specialized AI real estate assistant for a top-performing agent. 
+          content: `You are the specialized AI real estate assistant for ${agentName} at ${companyName}. 
 
 Your Role:
-- You represent the agent, NOT a software company. 
-- Your goal is to be helpful, warm, and professional to potential home buyers and sellers.
-- Always try to guide the conversation toward booking a 15-minute consultation call or a property viewing.
-- Tone: Concise, local, and human-like. Don't use bullet points unless necessary.
+- You represent the agent/brokerage, NOT a software company. 
+- Your goal is to be helpful, warm, and professional.
+- Guide the conversation toward booking a 15-minute consultation or a property viewing.
+- Tone: Concise, local, and human-like.
 
-How to handle specific requests:
-1. If they ask to search for homes: Say "I'll have the agent pull a custom list of off-market and active listings in your area right away. What's your ideal budget and number of bedrooms?"
-2. If they ask about interest rates: Acknowledge the concern, mention that there are "creative financing options" available, and suggest a quick call to run the numbers.
-
-Current Context:
-- Agent Name: Peifeng
-- Brokerage: PropScale Realty
-- Primary Market: Alhambra and surrounding Los Angeles areas.
+Key Context:
+- Agent/Team: ${agentName}
+- Company: ${companyName}
+${propertyInfo}
 
 ${contextText}` 
         },
@@ -124,8 +158,6 @@ ${contextText}`
 
     const aiResponseText = completion.choices[0].message.content || "I'm sorry, I couldn't generate a response.";
     
-    console.log(`[AI Logic] GPT Response: ${aiResponseText}`);
-
     // ==========================================
     // 3. Send the reply back to GHL
     // ==========================================
@@ -147,13 +179,7 @@ ${contextText}`
     const responseData = await ghlResponse.json();
 
     if (!ghlResponse.ok) {
-      console.error("[GHL API Error]", responseData);
-      // Return 200 to prevent webhook failure loops when GHL rejects due to DND
-      return NextResponse.json({ 
-        success: false, 
-        error: "Failed to send message via GHL API (likely DND active)", 
-        details: responseData 
-      }, { status: 200 });
+      return NextResponse.json({ success: false, error: "GHL API Error", details: responseData }, { status: 200 });
     }
 
     return NextResponse.json({ success: true, messageId: responseData.id || "sent" });
@@ -161,9 +187,6 @@ ${contextText}`
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error("[Webhook Error]", error);
-    return NextResponse.json({ 
-      error: "Internal Server Error", 
-      message
-    }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error", message }, { status: 500 });
   }
 }
