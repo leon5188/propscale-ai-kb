@@ -38,6 +38,40 @@ export async function getGHLLocation(locationId: string) {
   return res.json();
 }
 
+export async function getGHLOpportunitiesByContact(contactId: string) {
+  const apiKey = process.env.GHL_API_KEY || process.env.GHL_API_TOKEN;
+  
+  const res = await fetch(`https://services.leadconnectorhq.com/opportunities/search?contactId=${contactId}`, {
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Version': '2021-07-28',
+      'Accept': 'application/json'
+    }
+  });
+
+  if (!res.ok) return null;
+  return res.json();
+}
+
+export async function updateGHLOpportunity(pipelineId: string, opportunityId: string, stageId: string) {
+  const apiKey = process.env.GHL_API_KEY || process.env.GHL_API_TOKEN;
+  
+  const res = await fetch(`https://services.leadconnectorhq.com/opportunities/pipelines/${pipelineId}/opportunities/${opportunityId}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Version': '2021-07-28',
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      pipelineStageId: stageId
+    })
+  });
+
+  return res.ok;
+}
+
 export async function getGHLOpportunities() {
   const apiKey = process.env.GHL_API_KEY;
   const locationId = process.env.GHL_LOCATION_ID;

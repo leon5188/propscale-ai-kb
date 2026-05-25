@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { getIndex } from '@/lib/pinecone';
-import { getGHLContact, getGHLLocation } from '@/lib/ghl';
+import { 
+  getGHLContact, 
+  getGHLLocation, 
+  getGHLOpportunitiesByContact, 
+  updateGHLOpportunity 
+} from '@/lib/ghl';
 
 const GHL_API_TOKEN = process.env.GHL_API_TOKEN;
 
@@ -175,7 +180,38 @@ ${contextText}`
     const aiResponseText = completion.choices[0].message.content || "I'm sorry, I couldn't generate a response.";
     
     // ==========================================
-    // 3. Send the reply back to GHL
+    // 3. PIPELINE AUTOMATION (Auto-Move Lead)
+    // ==========================================
+    try {
+      const opportunitiesData = await getGHLOpportunitiesByContact(contactId);
+      if (opportunitiesData && opportunitiesData.opportunities && opportunitiesData.opportunities.length > 0) {
+        const opp = opportunitiesData.opportunities[0];
+        const pipelineId = opp.pipelineId;
+        
+        // Define target stages (Mapping for the Real Estate Pipeline)
+        const STAGE_CONTACTED = 'deb47d38-5860-4300-8417-1059082e8a67';
+        const STAGE_AI_QUALIFIED = '7f90275e-28c4-4681-bfd0-ceae46e6feba';
+
+        let targetStage = STAGE_CONTACTED;
+        
+        // Detect high intent for "AI Qualified" movement
+        const lowAiResponse = aiResponseText.toLowerCase();
+        if (lowAiResponse.includes('booked') || 
+            lowAiResponse.includes('calendar') || 
+            lowAiResponse.includes('appointment')) {
+          targetStage = STAGE_AI_QUALIFIED;
+        }
+
+        if (opp.pipelineStageId !== targetStage) {
+          await updateGHLOpportunity(pipelineId, opp.id, targetStage);
+        }
+      }
+    } catch (pipelineError) {
+      console.error("[Pipeline Error] Failed to move opportunity:", pipelineError);
+    }
+
+    // ==========================================
+    // 4. Send the reply back to GHL
     // ==========================================
     const ghlResponse = await fetch('https://services.leadconnectorhq.com/conversations/messages', {
       method: 'POST',
