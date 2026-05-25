@@ -6,7 +6,8 @@ import {
   getGHLLocation, 
   getGHLOpportunitiesByContact, 
   updateGHLOpportunity,
-  getGHLCustomFields
+  getGHLCustomFields,
+  getGHLMessages
 } from '@/lib/ghl';
 
 const GHL_API_TOKEN = process.env.GHL_API_TOKEN;
@@ -47,6 +48,26 @@ export async function POST(req: Request) {
     }
 
     console.log(`[GHL Webhook] Received message from ${contactId} in ${locationId}: ${incomingMessage}`);
+
+    // ==========================================
+    // 0.5 HUMAN INTERVENTION DETECTION
+    // ==========================================
+    try {
+      const messagesData = await getGHLMessages(contactId);
+      if (messagesData && messagesData.messages && messagesData.messages.length > 0) {
+        const lastMessage = messagesData.messages[0]; // Most recent first
+        // If the last message was outbound (sent by us), it means either:
+        // 1. A human agent just replied manually.
+        // 2. The AI just replied and this is a race condition.
+        // In either case, we should NOT send another AI message.
+        if (lastMessage.direction === 'outbound') {
+          console.log(`[Human Detection] Last message to ${contactId} was outbound. AI standing down.`);
+          return NextResponse.json({ success: true, skipped: true, reason: "Last message was outbound" });
+        }
+      }
+    } catch (msgError) {
+      console.error("[Human Detection Error] Skipping check:", msgError);
+    }
 
     // ==========================================
     // 1.0 DYNAMIC IDENTITY & PROPERTY DATA

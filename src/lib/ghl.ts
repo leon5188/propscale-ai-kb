@@ -38,6 +38,21 @@ export async function getGHLLocation(locationId: string) {
   return res.json();
 }
 
+export async function getGHLMessages(contactId: string) {
+  const apiKey = process.env.GHL_API_KEY || process.env.GHL_API_TOKEN;
+  
+  const res = await fetch(`https://services.leadconnectorhq.com/conversations/messages?contactId=${contactId}&limit=5`, {
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Version': '2021-07-28',
+      'Accept': 'application/json'
+    }
+  });
+
+  if (!res.ok) return null;
+  return res.json();
+}
+
 export async function getGHLCustomFields(locationId: string) {
   const apiKey = process.env.GHL_API_KEY || process.env.GHL_API_TOKEN;
   
