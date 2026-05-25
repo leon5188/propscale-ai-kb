@@ -67,19 +67,29 @@ export async function POST(req: Request) {
         const address = contact.address1 || "";
         const customFields = contact.customFields || [];
         
+        const fieldMap: Record<string, string> = {
+          'I3HNX3KjHNjw7Xg1vWFw': 'Zestimate / Estimated Home Value',
+          'kXlUGnc3aZtQnEx8ub4J': 'Bedrooms',
+          'xk8vzNPLQgxEKF0QLc00': 'Bathrooms',
+          '62QFe9nQscrlvwQmEriW': 'Square Footage',
+          'wAOup8SPYr8j2daBaEup': 'Year Built'
+        };
+
         let fieldDetails = [];
         if (address) fieldDetails.push(`Address: ${address}`);
         
         // Map common property data if available
         for (const field of customFields) {
-          // Look for Zestimate or common property identifiers
-          if (typeof field.value === 'string' && (field.value.startsWith('$') || !isNaN(Number(field.value)))) {
+          const fieldName = fieldMap[field.id];
+          if (fieldName) {
+            fieldDetails.push(`${fieldName}: ${field.value}`);
+          } else if (typeof field.value === 'string' && (field.value.startsWith('$') || !isNaN(Number(field.value)))) {
             fieldDetails.push(`Property Insight (${field.id}): ${field.value}`);
           }
         }
         
         if (fieldDetails.length > 0) {
-          propertyInfo = `\n\nLEAD PROPERTY DATA:\n${fieldDetails.join('\n')}\n(Note: Use this data to provide instant value if they ask about their home.)`;
+          propertyInfo = `\n\nLEAD PROPERTY DATA:\n${fieldDetails.join('\n')}\n(CRITICAL INSTRUCTION: You MUST use the Zestimate/Estimated Home Value provided above when the user asks about their home's worth. Do not say you need to check.)`;
         }
       }
     } catch (dataError) {
