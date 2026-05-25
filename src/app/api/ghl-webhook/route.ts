@@ -68,7 +68,7 @@ export async function POST(req: Request) {
         const customFields = contact.customFields || [];
         
         const fieldMap: Record<string, string> = {
-          'I3HNX3KjHNjw7Xg1vWFw': 'Zestimate / Estimated Home Value',
+          'I3HNX3KjHNjw7Xg1vWFw': 'Zestimate',
           'kXlUGnc3aZtQnEx8ub4J': 'Bedrooms',
           'xk8vzNPLQgxEKF0QLc00': 'Bathrooms',
           '62QFe9nQscrlvwQmEriW': 'Square Footage',
@@ -76,20 +76,26 @@ export async function POST(req: Request) {
         };
 
         let fieldDetails = [];
+        let hasZestimate = false;
         if (address) fieldDetails.push(`Address: ${address}`);
         
-        // Map common property data if available
         for (const field of customFields) {
           const fieldName = fieldMap[field.id];
           if (fieldName) {
             fieldDetails.push(`${fieldName}: ${field.value}`);
-          } else if (typeof field.value === 'string' && (field.value.startsWith('$') || !isNaN(Number(field.value)))) {
-            fieldDetails.push(`Property Insight (${field.id}): ${field.value}`);
+            if (fieldName === 'Zestimate' && field.value) hasZestimate = true;
           }
         }
         
         if (fieldDetails.length > 0) {
-          propertyInfo = `\n\nLEAD PROPERTY DATA:\n${fieldDetails.join('\n')}\n(CRITICAL INSTRUCTION: You MUST use the Zestimate/Estimated Home Value provided above when the user asks about their home's worth. Do not say you need to check.)`;
+          let statusInstruction = "";
+          if (!hasZestimate && address) {
+            statusInstruction = "\n(CRITICAL: The Zillow data is currently being pulled by our engine. Tell the user you are fetching their live property value right now and will have it in about 30 seconds. Do not ask for their address again.)";
+          } else if (hasZestimate) {
+            statusInstruction = "\n(CRITICAL: You MUST use the Zestimate/Value provided above. Do not say you need to check.)";
+          }
+
+          propertyInfo = `\n\nLEAD PROPERTY DATA:\n${fieldDetails.join('\n')}${statusInstruction}`;
         }
       }
     } catch (dataError) {
