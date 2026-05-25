@@ -5,7 +5,8 @@ import {
   getGHLContact, 
   getGHLLocation, 
   getGHLOpportunitiesByContact, 
-  updateGHLOpportunity 
+  updateGHLOpportunity,
+  getGHLCustomFields
 } from '@/lib/ghl';
 
 const GHL_API_TOKEN = process.env.GHL_API_TOKEN;
@@ -55,10 +56,11 @@ export async function POST(req: Request) {
     let propertyInfo = "";
 
     try {
-      // Parallel fetch for better performance
-      const [contactData, locationData] = await Promise.all([
+      // Parallel fetch for better performance: Identity + Property Metadata
+      const [contactData, locationData, customFieldsMetadata] = await Promise.all([
         getGHLContact(contactId),
-        locationId ? getGHLLocation(locationId) : Promise.resolve(null)
+        locationId ? getGHLLocation(locationId) : Promise.resolve(null),
+        locationId ? getGHLCustomFields(locationId) : Promise.resolve(null)
       ]);
 
       if (locationData && locationData.location) {
@@ -70,21 +72,26 @@ export async function POST(req: Request) {
       if (contactData && contactData.contact) {
         const contact = contactData.contact;
         const address = contact.address1 || "";
-        const customFields = contact.customFields || [];
+        const contactCustomFields = contact.customFields || [];
         
-        const fieldMap: Record<string, string> = {
-          'I3HNX3KjHNjw7Xg1vWFw': 'Zestimate',
-          'kXlUGnc3aZtQnEx8ub4J': 'Bedrooms',
-          'xk8vzNPLQgxEKF0QLc00': 'Bathrooms',
-          '62QFe9nQscrlvwQmEriW': 'Square Footage',
-          'wAOup8SPYr8j2daBaEup': 'Year Built'
-        };
+        // 1.0.1 DYNAMIC FIELD MAPPING (Scalable for B2B)
+        // Find field IDs by name so we don't hardcode them
+        const fieldMap: Record<string, string> = {};
+        if (customFieldsMetadata && customFieldsMetadata.customFields) {
+          const namesToMatch = ['Zestimate', 'Beds', 'Baths', 'SqFt', 'Year Built'];
+          for (const fieldMeta of customFieldsMetadata.customFields) {
+            const matchedName = namesToMatch.find(n => fieldMeta.name.toLowerCase().includes(n.toLowerCase()));
+            if (matchedName) {
+              fieldMap[fieldMeta.id] = matchedName;
+            }
+          }
+        }
 
         let fieldDetails = [];
         let hasZestimate = false;
         if (address) fieldDetails.push(`Address: ${address}`);
         
-        for (const field of customFields) {
+        for (const field of contactCustomFields) {
           const fieldName = fieldMap[field.id];
           if (fieldName) {
             fieldDetails.push(`${fieldName}: ${field.value}`);
@@ -97,7 +104,7 @@ export async function POST(req: Request) {
           if (!hasZestimate && address) {
             statusInstruction = "\n(CRITICAL: The Zillow data is currently being pulled by our engine. Tell the user you are fetching their live property value right now and will have it in about 30 seconds. Do not ask for their address again.)";
           } else if (hasZestimate) {
-            statusInstruction = "\n(CRITICAL: You MUST use the Zestimate/Value provided above. Do not say you need to check.)";
+            statusInstruction = "\n(CRITICAL: You MUST use the Zestimate value provided above. Do not say you need to check.)";
           }
 
           propertyInfo = `\n\nLEAD PROPERTY DATA:\n${fieldDetails.join('\n')}${statusInstruction}`;
