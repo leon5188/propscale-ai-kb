@@ -287,7 +287,7 @@ export default function AnalyticsDashboard() {
           </div>
         </div>
         <span className="mt-6 text-xl font-bold text-gray-900 tracking-tight">PropScale Intelligence</span>
-        <p className="mt-2 text-gray-500 font-medium animate-pulse">Syncing with GoHighLevel CRM...</p>
+        <p className="mt-2 text-gray-500 font-medium animate-pulse">Syncing with PropScale CRM...</p>
       </div>
     )
   }
@@ -299,7 +299,7 @@ export default function AnalyticsDashboard() {
            <Zap className="h-8 w-8 text-red-600" />
         </div>
         <div className="text-2xl font-bold text-gray-900">Connection Interrupted</div>
-        <p className="max-w-xs text-center text-gray-500 font-medium">We couldn&apos;t reach your GHL account. Please verify your API credentials.</p>
+        <p className="max-w-xs text-center text-gray-500 font-medium">We couldn&apos;t reach your CRM account. Please verify your connection.</p>
         <Button size="lg" className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200" onClick={() => window.location.reload()}>Retry Connection</Button>
       </div>
     )
@@ -485,7 +485,7 @@ export default function AnalyticsDashboard() {
                     <CardTitle className="text-xl font-bold text-gray-900">Priority Pipeline</CardTitle>
                     <CardDescription className="font-medium text-gray-500">High-value opportunities.</CardDescription>
                   </div>
-                  <Button variant="link" onClick={openGHLCrm} className="text-blue-600 font-bold decoration-2">View CRM Pipeline →</Button>
+                  <Button variant="link" onClick={openGHLCrm} className="text-blue-600 font-bold decoration-2">View Pipeline →</Button>
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -567,7 +567,7 @@ export default function AnalyticsDashboard() {
                   <Zap className="w-6 h-6" />
                 </div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">System Health</p>
-                <p className="text-sm font-medium text-gray-500">GHL Sync active. Last update: Just now.</p>
+                <p className="text-sm font-medium text-gray-500">Live Sync active. Last update: Just now.</p>
               </CardContent>
             </Card>
           </div>

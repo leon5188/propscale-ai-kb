@@ -210,7 +210,7 @@ function ReportContent() {
               <div className="mb-6">
                 <h3 className="text-xl font-bold mb-2">Ready to fix the leak?</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">
-                  We have reserved a 10-minute Tech Audit slot for <span className="font-bold text-slate-900">{agentName}</span> to see this automation live in your own GHL dashboard.
+                  We have reserved a 10-minute Tech Audit slot for <span className="font-bold text-slate-900">{agentName}</span> to see this automation live in your own dashboard.
                 </p>
               </div>
               
@@ -232,7 +232,7 @@ function ReportContent() {
                   <span className="text-green-500 font-bold">COMPLETE</span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-slate-500">GHL Workflow Bridge</span>
+                  <span className="text-slate-500">PropScale Sync Bridge</span>
                   <span className="text-blue-500 font-bold uppercase tracking-tighter">Pending Auth</span>
                 </div>
               </div>

@@ -125,8 +125,8 @@ function DashboardContent() {
             </div>
             <p className="text-slate-400 text-sm font-medium">System Integrity</p>
             <div className="flex flex-col gap-2 mt-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-500">GHL Connection</span>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-slate-500">CRM Connection</span>
                 <span className={`font-bold ${stats?.systemHealth.ghl === 'connected' ? 'text-emerald-400' : 'text-red-400'}`}>
                   {stats?.systemHealth.ghl.toUpperCase() || 'OFFLINE'}
                 </span>
