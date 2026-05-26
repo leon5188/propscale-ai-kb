@@ -19,7 +19,10 @@ const Navbar = () => (
         <a href="#solution" className="hover:text-blue-600 transition">Superpowers</a>
         <a href="#tech" className="hover:text-blue-600 transition">Platform</a>
       </div>
-      <button className="px-6 py-2 bg-slate-900 text-white font-bold rounded-xl hover:bg-black transition text-xs shadow-xl shadow-slate-900/10">
+      <button 
+        onClick={() => window.location.href = 'https://propscale-ai.com/pricing'}
+        className="px-6 py-2 bg-slate-900 text-white font-bold rounded-xl hover:bg-black transition text-xs shadow-xl shadow-slate-900/10"
+      >
         Deploy Now
       </button>
     </div>

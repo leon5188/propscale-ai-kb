@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { ArrowRight, CheckCircle2, Mic2, Layout, Database, Shield } from 'lucide-react';
 
@@ -33,7 +35,10 @@ const Onboarding = () => {
                   
                   {/* Mock OAuth Button */}
                   <div className="mt-auto pt-8">
-                    <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center gap-3 active:scale-95 transition-all cursor-pointer hover:bg-slate-50">
+                    <div 
+                      onClick={() => window.location.href = 'https://propscale-ai.com/pricing'}
+                      className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center gap-3 active:scale-95 transition-all cursor-pointer hover:bg-slate-50"
+                    >
                       <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center text-[10px] font-bold text-white italic">P</div>
                       <span className="text-xs font-black text-slate-700">Authorize PropScale</span>
                     </div>
@@ -101,7 +106,10 @@ const Onboarding = () => {
 
         {/* Floating Success Pill */}
         <div className="mt-24 flex justify-center">
-          <div className="bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-4 group cursor-pointer active:scale-95 transition-all">
+          <div 
+            onClick={() => window.location.href = 'https://propscale-ai.com/pricing'}
+            className="bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-4 group cursor-pointer active:scale-95 transition-all"
+          >
              <Shield className="w-5 h-5 text-blue-400 fill-blue-400" />
              <span className="font-bold tracking-tight">PropScale Engine: Verified & Deployable</span>
              <div className="h-4 w-px bg-slate-700"></div>

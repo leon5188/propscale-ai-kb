@@ -34,11 +34,17 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="flex items-center justify-center px-10 py-5 bg-slate-900 text-white font-bold rounded-2xl hover:bg-black transition duration-300 shadow-2xl shadow-slate-900/20 active:scale-95 group">
+            <button 
+              onClick={() => window.location.href = 'https://propscale-ai.com/pricing'}
+              className="flex items-center justify-center px-10 py-5 bg-slate-900 text-white font-bold rounded-2xl hover:bg-black transition duration-300 shadow-2xl shadow-slate-900/20 active:scale-95 group"
+            >
               Deploy Your Engine
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
-            <button className="flex items-center justify-center px-10 py-5 bg-white text-slate-600 border border-slate-200 font-bold rounded-2xl hover:bg-slate-50 transition duration-300 active:scale-95">
+            <button 
+              onClick={() => window.location.href = 'https://propscale-ai.com/pricing'}
+              className="flex items-center justify-center px-10 py-5 bg-white text-slate-600 border border-slate-200 font-bold rounded-2xl hover:bg-slate-50 transition duration-300 active:scale-95"
+            >
               Watch Demo
             </button>
           </div>
