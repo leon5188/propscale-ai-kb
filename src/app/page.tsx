@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import Hero from '@/components/landing/Hero';
 import Problem from '@/components/landing/Problem';
