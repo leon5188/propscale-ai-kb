@@ -9,6 +9,7 @@ import {
   getGHLCustomFields,
   getGHLMessages
 } from '@/lib/ghl';
+import { prisma } from '@/lib/prisma';
 
 const GHL_API_TOKEN = process.env.GHL_API_TOKEN;
 
@@ -55,11 +56,7 @@ export async function POST(req: Request) {
     try {
       const messagesData = await getGHLMessages(contactId);
       if (messagesData && messagesData.messages && messagesData.messages.length > 0) {
-        const lastMessage = messagesData.messages[0]; // Most recent first
-        // If the last message was outbound (sent by us), it means either:
-        // 1. A human agent just replied manually.
-        // 2. The AI just replied and this is a race condition.
-        // In either case, we should NOT send another AI message.
+        const lastMessage = messagesData.messages[0]; 
         if (lastMessage.direction === 'outbound') {
           console.log(`[Human Detection] Last message to ${contactId} was outbound. AI standing down.`);
           return NextResponse.json({ success: true, skipped: true, reason: "Last message was outbound" });
@@ -75,19 +72,26 @@ export async function POST(req: Request) {
     let agentName = "the agent";
     let companyName = "PropScale Realty";
     let propertyInfo = "";
+    let brandVoice = "Direct, professional, and compressed.";
 
     try {
-      // Parallel fetch for better performance: Identity + Property Metadata
-      const [contactData, locationData, customFieldsMetadata] = await Promise.all([
+      // Parallel fetch: Identity + Metadata + DB Settings
+      const [contactData, locationData, customFieldsMetadata, dbSettings] = await Promise.all([
         getGHLContact(contactId),
         locationId ? getGHLLocation(locationId) : Promise.resolve(null),
-        locationId ? getGHLCustomFields(locationId) : Promise.resolve(null)
+        locationId ? getGHLCustomFields(locationId) : Promise.resolve(null),
+        locationId ? prisma.locationSettings.findUnique({ where: { id: locationId } }) : Promise.resolve(null)
       ]);
 
+      if (dbSettings) {
+        brandVoice = dbSettings.brandVoiceProfile || brandVoice;
+        agentName = dbSettings.agentName || agentName;
+        companyName = dbSettings.companyName || companyName;
+      }
+
       if (locationData && locationData.location) {
-        companyName = locationData.location.name || companyName;
-        // Try to identify agent name
-        agentName = locationData.location.firstName || "the team";
+        companyName = dbSettings?.companyName || locationData.location.name || companyName;
+        agentName = dbSettings?.agentName || locationData.location.firstName || "the team";
       }
 
       if (contactData && contactData.contact) {
@@ -96,7 +100,6 @@ export async function POST(req: Request) {
         const contactCustomFields = contact.customFields || [];
         
         // 1.0.1 DYNAMIC FIELD MAPPING (Scalable for B2B)
-        // Find field IDs by name so we don't hardcode them
         const fieldMap: Record<string, string> = {};
         if (customFieldsMetadata && customFieldsMetadata.customFields) {
           const namesToMatch = ['Zestimate', 'Beds', 'Baths', 'SqFt', 'Year Built'];
@@ -123,7 +126,7 @@ export async function POST(req: Request) {
         if (fieldDetails.length > 0) {
           let statusInstruction = "";
           if (!hasZestimate && address) {
-            statusInstruction = "\n(CRITICAL: The Zillow data is currently being pulled by our engine. Tell the user you are fetching their live property value right now and will have it in about 30 seconds. Do not ask for their address again.)";
+            statusInstruction = "\n(CRITICAL: The Zillow data is currently being pulled by our engine. Tell the user you are fetching their live property value right now and will have it in about 30 seconds.)";
           } else if (hasZestimate) {
             statusInstruction = "\n(CRITICAL: You MUST use the Zestimate value provided above. Do not say you need to check.)";
           }
@@ -140,9 +143,7 @@ export async function POST(req: Request) {
     // ==========================================
     const normalizedMessage = incomingMessage.toLowerCase().trim();
     if (normalizedMessage === 'stop' || 
-        normalizedMessage.includes('mailbox that is not actively monitored') || 
-        normalizedMessage.includes('not correspond to a valid address')) {
-      console.log(`[GHL Webhook] Ignored DND/bounce message from ${contactId}`);
+        normalizedMessage.includes('mailbox that is not actively monitored')) {
       return NextResponse.json({ success: true, ignored: true, reason: "DND or bounce message detected" });
     }
 
@@ -189,22 +190,18 @@ export async function POST(req: Request) {
           content: `You are the Senior Assistant for ${agentName} at ${companyName}. 
 
 # VOICE STANDARDS
-- Tone: Direct, professional, and compressed. 
+- Tone Profile: ${brandVoice}
+- Style: Direct, professional, and compressed. 
 - No Fluff: Do not use adjectives like "revolutionary," "game-changing," or "cutting-edge." 
-- No AI Tropes: Avoid phrases like "I'm here to help" or "In today's market."
-- Concrete: Use specific numbers and property data (receipts) to drive points.
-- Human-like: Speak in short, punchy sentences. Vary sentence length.
+- No AI Tropes: Avoid phrases like "I'm here to help."
+- Human-like: Speak in short, punchy sentences.
 
 # YOUR ROLE
-- You are a high-tier operator, NOT a chatbot. 
-- You represent ${agentName} while they are in the field.
-- Your single goal: Move the lead toward a 15-minute tech-driven property valuation call or viewing.
+- You are a high-tier operator representing ${agentName}.
+- Move the lead toward a 15-minute tech-driven property valuation call or viewing.
 
 # CONTEXT
-- Lead Identity: Identified via GHL
-- Company: ${companyName}
 ${propertyInfo}
-
 ${contextText}` 
         },
         { role: "user", content: incomingMessage }
@@ -221,18 +218,12 @@ ${contextText}`
       if (opportunitiesData && opportunitiesData.opportunities && opportunitiesData.opportunities.length > 0) {
         const opp = opportunitiesData.opportunities[0];
         const pipelineId = opp.pipelineId;
-        
-        // Define target stages (Mapping for the Real Estate Pipeline)
         const STAGE_CONTACTED = 'deb47d38-5860-4300-8417-1059082e8a67';
         const STAGE_AI_QUALIFIED = '7f90275e-28c4-4681-bfd0-ceae46e6feba';
 
         let targetStage = STAGE_CONTACTED;
-        
-        // Detect high intent for "AI Qualified" movement
         const lowAiResponse = aiResponseText.toLowerCase();
-        if (lowAiResponse.includes('booked') || 
-            lowAiResponse.includes('calendar') || 
-            lowAiResponse.includes('appointment')) {
+        if (lowAiResponse.includes('booked') || lowAiResponse.includes('calendar') || lowAiResponse.includes('appointment')) {
           targetStage = STAGE_AI_QUALIFIED;
         }
 

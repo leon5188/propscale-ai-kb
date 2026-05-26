@@ -18,3 +18,11 @@ model Lead {
   status    String   @default("new")
   createdAt DateTime @default(now())
 }
+
+model LocationSettings {
+  id                String   @id // GHL Location ID
+  agentName         String?
+  companyName       String?
+  brandVoiceProfile String?  @default("Professional, direct, and concise real estate assistant.")
+  updatedAt         DateTime @default(now()) @updatedAt
+}
