@@ -136,7 +136,18 @@ export async function POST(req: Request) {
           }
 
           const intelContext = intelligenceSummary ? `\nDEEP INSIGHTS:\n${intelligenceSummary}` : "";
-          propertyInfo = `\n\nLEAD PROPERTY DATA:\n${fieldDetails.join('\n')}${intelContext}${statusInstruction}`;
+          
+          // Construct the dynamic video link
+          const videoParams = new URLSearchParams({
+            address: address || "",
+            zestimate: hasZestimate ? fieldDetails.find(f => f.includes('Zestimate'))?.split(': ')[1] || "" : "",
+            agent: agentName,
+            company: companyName,
+            score: fieldDetails.find(f => f.includes('PropScale Score'))?.split(': ')[1] || "90"
+          });
+          const videoLink = `\n\nVideo Report: https://propscale-ai-kb-c8ct.vercel.app/v?${videoParams.toString()}`;
+
+          propertyInfo = `\n\nLEAD PROPERTY DATA:\n${fieldDetails.join('\n')}${intelContext}${statusInstruction}\n\n(CRITICAL INSTRUCTION: Include the following Video Report link at the end of your message to wow the lead: ${videoLink})`;
         }
       }
     } catch (dataError) {
