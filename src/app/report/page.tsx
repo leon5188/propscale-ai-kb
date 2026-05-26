@@ -4,11 +4,11 @@ import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  LineChart, Line, AreaChart, Area
+  AreaChart, Area
 } from 'recharts';
 import { 
   TrendingDown, Zap, Clock, ShieldAlert, CheckCircle2, 
-  ArrowRight, PhoneCall, Mail, MousePointer2 
+  ArrowRight, PhoneCall, Mail, MousePointer2, AlertTriangle, Search, Info
 } from 'lucide-react';
 
 const leadLeakData = [
@@ -113,9 +113,6 @@ function ReportContent() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-              <div className="mt-4 text-center">
-                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Conversion Rate % vs. Response Time</p>
-              </div>
             </div>
 
             {/* AI Comparison Section */}
@@ -129,21 +126,18 @@ function ReportContent() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                 <div className="space-y-6">
-                  <div className="space-y-2">
-                    <p className="text-blue-400 font-bold uppercase tracking-widest text-xs">Response Time Benchmark</p>
-                    <h3 className="text-3xl font-bold">Human vs. AI</h3>
-                  </div>
+                  <h3 className="text-3xl font-bold text-blue-400">Human vs. AI</h3>
                   <p className="text-slate-400 leading-relaxed">
-                    While your team is busy with showings, our AI acts as a 24/7 concierge. It doesn't just reply; it qualifies the lead using local market data from Zillow.
+                    While your team is busy with showings, our AI acts as a 24/7 concierge. It qualifies the lead using local market data from Zillow.
                   </p>
-                  <ul className="space-y-3">
+                  <ul className="space-y-3 text-sm">
                     {[
                       "Instant Data Enrichment (Zestimate, SqFt)",
                       "Localized AI Conversation Soul",
                       "Auto-Booking Listing Presentations",
                       "365-Day Intelligent Nurture"
                     ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 text-sm">
+                      <li key={i} className="flex items-center gap-3">
                         <CheckCircle2 className="text-blue-500 w-5 h-5" />
                         <span>{item}</span>
                       </li>
@@ -166,8 +160,46 @@ function ReportContent() {
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
-                  <div className="text-center mt-4 text-xs text-slate-500 font-medium">Response Time in Minutes (Lower is better)</div>
                 </div>
+              </div>
+            </div>
+
+            {/* Technical Evidence Section (ECC-Inspired) */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-slate-100 rounded-lg">
+                  <ShieldAlert className="text-slate-600 w-6 h-6" />
+                </div>
+                <h2 className="text-2xl font-bold">Audit Evidence & Observations</h2>
+              </div>
+
+              <div className="overflow-hidden border rounded-xl">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-50 border-b">
+                    <tr>
+                      <th className="px-4 py-3 font-semibold text-slate-700">Infrastructure Component</th>
+                      <th className="px-4 py-3 font-semibold text-slate-700">Status</th>
+                      <th className="px-4 py-3 font-semibold text-slate-700">Observation</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    <tr>
+                      <td className="px-4 py-4 font-medium">Instant SMS Responder</td>
+                      <td className="px-4 py-4"><span className="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-[10px] font-bold uppercase">Not Detected</span></td>
+                      <td className="px-4 py-4 text-slate-500 italic">No automated response handshake detected within the first 60 seconds of lead capture.</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-4 font-medium">Real-time Zestimate Bridge</td>
+                      <td className="px-4 py-4"><span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-[10px] font-bold uppercase">API Gap</span></td>
+                      <td className="px-4 py-4 text-slate-500 italic">CRM data fields for property valuation are missing or require manual population.</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-4 font-medium">Nurture Automation</td>
+                      <td className="px-4 py-4"><span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold uppercase">Manual Only</span></td>
+                      <td className="px-4 py-4 text-slate-500 italic">Follow-up sequence relies on manual triggers, resulting in 70% drop-off in Month 2.</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -187,35 +219,21 @@ function ReportContent() {
                   Book Free Tech Audit
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
-                <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl border border-dashed">
-                  <div className="p-2 bg-white rounded-full shadow-sm">
-                    <ShieldAlert className="text-amber-500 w-5 h-5" />
-                  </div>
-                  <p className="text-[10px] text-slate-500 font-medium uppercase leading-tight">
-                    This offer is limited to 1 agency per market area to ensure local exclusivity.
-                  </p>
-                </div>
               </div>
 
               <div className="mt-8 pt-8 border-t space-y-4">
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Infrastructure Status</p>
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-slate-500">Zillow API Integration</span>
-                  <span className="text-green-500 font-bold flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                    READY
-                  </span>
+                  <span className="text-green-500 font-bold flex items-center gap-1">READY</span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-slate-500">AI Logic Mapping</span>
-                  <span className="text-green-500 font-bold flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                    COMPLETE
-                  </span>
+                  <span className="text-green-500 font-bold">COMPLETE</span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-slate-500">GHL Workflow Bridge</span>
-                  <span className="text-blue-500 font-bold">PENDING AUTH</span>
+                  <span className="text-blue-500 font-bold uppercase tracking-tighter">Pending Auth</span>
                 </div>
               </div>
             </div>
@@ -223,22 +241,13 @@ function ReportContent() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="bg-white border-t py-12 mt-20">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8 text-sm">
           <div className="flex items-center gap-2">
             <Zap className="text-blue-600 w-5 h-5 fill-current" />
-            <span className="font-bold text-slate-900">PropScale AI</span>
+            <span className="font-bold text-slate-900 uppercase tracking-tighter">PropScale AI</span>
           </div>
-          <p className="text-slate-400 text-sm">© 2026 PropScale AI. All rights reserved. Data analyzed for proprietary outreach.</p>
-          <div className="flex gap-4">
-            <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-              <Mail className="w-5 h-5" />
-            </div>
-            <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-              <PhoneCall className="w-5 h-5" />
-            </div>
-          </div>
+          <p className="text-slate-400">© 2026 PropScale AI. All rights reserved. Proprietary Audit Intelligence.</p>
         </div>
       </footer>
     </div>
@@ -247,7 +256,7 @@ function ReportContent() {
 
 export default function ReportPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading Report...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-slate-500">Loading Report Intelligence...</div>}>
       <ReportContent />
     </Suspense>
   );
