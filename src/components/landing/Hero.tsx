@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Zap, Search, MessageSquare, ShieldCheck, Database } from 'lucide-react';
+import LiveDemo from './LiveDemo';
 
 const Hero = () => {
   const [chatStep, setChatStep] = useState(0);
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -42,13 +44,16 @@ const Hero = () => {
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
             <button 
-              onClick={() => window.location.href = 'https://propscale-ai.com/pricing'}
+              onClick={() => setIsDemoOpen(true)}
               className="flex items-center justify-center px-10 py-5 bg-white text-slate-600 border border-slate-200 font-bold rounded-2xl hover:bg-slate-50 transition duration-300 active:scale-95"
             >
               Watch Demo
             </button>
           </div>
         </div>
+
+        {/* Live Demo Modal */}
+        <LiveDemo isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
 
         {/* Logo Marquee / Trusted By */}
         <div className="mb-24">
