@@ -9,22 +9,22 @@ const CTA = () => {
           <div className="inline-flex items-center justify-center p-3 bg-blue-800 rounded-2xl mb-8">
             <Sparkles className="w-8 h-8 text-blue-300" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight tracking-tight">
             Ready to scale your business, <br />
             not your workload?
           </h2>
           <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto leading-relaxed">
             Stop the admin hemorrhage today. Access the PropScale AI 12-Month 
-            Engine and turn your GoHighLevel sub-account into a non-stop 
+            Engine and turn your platform sub-account into a non-stop 
             conversion machine.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-10 py-5 bg-white text-blue-900 font-bold text-lg rounded-xl hover:bg-blue-50 transition duration-200 flex items-center justify-center shadow-xl">
+            <button className="px-10 py-5 bg-white text-blue-900 font-bold text-lg rounded-xl hover:bg-blue-50 transition duration-200 flex items-center justify-center shadow-xl shadow-blue-950/20 active:scale-95">
               Access the PropScale AI Engine Today
               <ArrowRight className="ml-2 w-6 h-6" />
             </button>
           </div>
-          <p className="mt-8 text-blue-300 text-sm font-medium">
+          <p className="mt-8 text-blue-300 text-sm font-medium uppercase tracking-widest">
             Risk-Free Guarantee: Set it up in minutes or your money back.
           </p>
         </div>

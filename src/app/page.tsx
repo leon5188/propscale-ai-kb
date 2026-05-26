@@ -34,7 +34,7 @@ const Footer = () => (
         <span className="text-lg font-bold text-gray-900 tracking-tight">PropScale AI</span>
       </div>
       <p className="text-gray-500 text-sm">
-        © 2026 PropScale AI. Built for high-performance GoHighLevel agencies.
+        © 2026 PropScale AI. Built for high-performance real estate agencies.
       </p>
     </div>
   </footer>

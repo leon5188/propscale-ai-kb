@@ -20,13 +20,13 @@ const Solution = () => {
     },
     {
       title: "Zero Admin Required",
-      description: "Once connected to GoHighLevel, the system runs itself. You only step in when a lead raises their hand.",
+      description: "Once connected to your platform, the system runs itself. You only step in when a lead raises their hand.",
       icon: <ShieldCheck className="w-5 h-5" />
     }
   ];
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-white" id="solution">
       <div className="container mx-auto px-6">
         <div className="flex flex-wrap items-center -mx-4">
           <div className="w-full lg:w-1/2 px-4 mb-16 lg:mb-0">
@@ -58,20 +58,20 @@ const Solution = () => {
 
           <div className="w-full lg:w-1/2 px-4">
             <div className="lg:pl-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-6 leading-tight">
+              <h2 className="text-4xl font-bold text-gray-900 mb-6 leading-tight text-slate-900 tracking-tight">
                 Your New Automated Assistant: <br />
                 <span className="text-blue-600">PropScale AI.</span>
               </h2>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                We&apos;ve built the ultimate 12-month nurture engine inside GoHighLevel. 
+                We&apos;ve built the ultimate 12-month nurture engine inside your native platform. 
                 It&apos;s not just a set of scripts; it&apos;s a conversion machine that never sleeps, 
                 never forgets, and never gets tired of following up.
               </p>
               
               <ul className="space-y-4">
                 {features.map((feature, index) => (
-                  <li key={index} className="flex items-start">
-                    <div className="flex-shrink-0 mt-1 p-1 bg-blue-50 text-blue-600 rounded">
+                  <li key={index} className="flex items-start group">
+                    <div className="flex-shrink-0 mt-1 p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
                       {feature.icon}
                     </div>
                     <div className="ml-4">
