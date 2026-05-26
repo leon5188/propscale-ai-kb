@@ -9,7 +9,9 @@ const REQUIRED_FIELDS = [
   { name: 'Beds', dataType: 'TEXT', placeholder: 'e.g. 3' },
   { name: 'Baths', dataType: 'TEXT', placeholder: 'e.g. 2' },
   { name: 'SqFt', dataType: 'TEXT', placeholder: 'e.g. 1,800' },
-  { name: 'Year Built', dataType: 'TEXT', placeholder: 'e.g. 1995' }
+  { name: 'Year Built', dataType: 'TEXT', placeholder: 'e.g. 1995' },
+  { name: 'PropScale Score', dataType: 'NUMERICAL', placeholder: '0-100' },
+  { name: 'PropScale Intelligence', dataType: 'LARGE_TEXT', placeholder: 'Deep insights from Exa.ai' }
 ];
 
 async function setupFields(locationId: string) {

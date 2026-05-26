@@ -10,6 +10,7 @@ import {
   getGHLMessages
 } from '@/lib/ghl';
 import { prisma } from '@/lib/prisma';
+import { getLeadIntelligence } from '@/lib/intelligence';
 
 const GHL_API_TOKEN = process.env.GHL_API_TOKEN;
 
@@ -102,7 +103,7 @@ export async function POST(req: Request) {
         // 1.0.1 DYNAMIC FIELD MAPPING (Scalable for B2B)
         const fieldMap: Record<string, string> = {};
         if (customFieldsMetadata && customFieldsMetadata.customFields) {
-          const namesToMatch = ['Zestimate', 'Beds', 'Baths', 'SqFt', 'Year Built'];
+          const namesToMatch = ['Zestimate', 'Beds', 'Baths', 'SqFt', 'Year Built', 'PropScale Score', 'PropScale Intelligence'];
           for (const fieldMeta of customFieldsMetadata.customFields) {
             const matchedName = namesToMatch.find(n => fieldMeta.name.toLowerCase().includes(n.toLowerCase()));
             if (matchedName) {
@@ -113,6 +114,8 @@ export async function POST(req: Request) {
 
         let fieldDetails = [];
         let hasZestimate = false;
+        let intelligenceSummary = "";
+
         if (address) fieldDetails.push(`Address: ${address}`);
         
         for (const field of contactCustomFields) {
@@ -120,18 +123,20 @@ export async function POST(req: Request) {
           if (fieldName) {
             fieldDetails.push(`${fieldName}: ${field.value}`);
             if (fieldName === 'Zestimate' && field.value) hasZestimate = true;
+            if (fieldName === 'PropScale Intelligence' && field.value) intelligenceSummary = field.value as string;
           }
         }
         
         if (fieldDetails.length > 0) {
           let statusInstruction = "";
           if (!hasZestimate && address) {
-            statusInstruction = "\n(CRITICAL: The Zillow data is currently being pulled by our engine. Tell the user you are fetching their live property value right now and will have it in about 30 seconds.)";
+            statusInstruction = "\n(CRITICAL: The Zillow data is currently being pulled. Tell user you are fetching live data right now.)";
           } else if (hasZestimate) {
-            statusInstruction = "\n(CRITICAL: You MUST use the Zestimate value provided above. Do not say you need to check.)";
+            statusInstruction = "\n(CRITICAL: You MUST use the Zestimate value provided above.)";
           }
 
-          propertyInfo = `\n\nLEAD PROPERTY DATA:\n${fieldDetails.join('\n')}${statusInstruction}`;
+          const intelContext = intelligenceSummary ? `\nDEEP INSIGHTS:\n${intelligenceSummary}` : "";
+          propertyInfo = `\n\nLEAD PROPERTY DATA:\n${fieldDetails.join('\n')}${intelContext}${statusInstruction}`;
         }
       }
     } catch (dataError) {
@@ -192,8 +197,7 @@ export async function POST(req: Request) {
 # VOICE STANDARDS
 - Tone Profile: ${brandVoice}
 - Style: Direct, professional, and compressed. 
-- No Fluff: Do not use adjectives like "revolutionary," "game-changing," or "cutting-edge." 
-- No AI Tropes: Avoid phrases like "I'm here to help."
+- No Fluff: No adjectives like "revolutionary" or "cutting-edge." 
 - Human-like: Speak in short, punchy sentences.
 
 # YOUR ROLE
@@ -233,6 +237,40 @@ ${contextText}`
       }
     } catch (pipelineError) {
       console.error("[Pipeline Error] Failed to move opportunity:", pipelineError);
+    }
+
+    // ==========================================
+    // 3.5 BACKGROUND INTELLIGENCE (Exa.ai)
+    // ==========================================
+    // Check if we need to enrich with deep intelligence
+    const needsIntelligence = propertyInfo && !propertyInfo.includes('DEEP INSIGHTS');
+    const contactAddress = body.address1 || (body.customData && body.customData.address);
+
+    if (needsIntelligence && contactAddress) {
+      getLeadIntelligence(contactAddress).then(async (intel) => {
+        if (intel) {
+          const meta = await getGHLCustomFields(locationId);
+          const scoreField = meta?.customFields?.find((f: any) => f.name.includes('PropScale Score'))?.id;
+          const intelField = meta?.customFields?.find((f: any) => f.name.includes('PropScale Intelligence'))?.id;
+          
+          if (scoreField || intelField) {
+            const fieldsToUpdate = [];
+            if (scoreField) fieldsToUpdate.push({ id: scoreField, value: intel.score });
+            if (intelField) fieldsToUpdate.push({ id: intelField, value: intel.intelligence });
+
+            await fetch(`https://services.leadconnectorhq.com/contacts/${contactId}`, {
+              method: 'PUT',
+              headers: {
+                'Authorization': `Bearer ${GHL_API_TOKEN}`,
+                'Version': '2021-07-28',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ customFields: fieldsToUpdate })
+            });
+            console.log(`[Intelligence] Successfully scored contact ${contactId}: ${intel.score}`);
+          }
+        }
+      }).catch(e => console.error("[Intelligence Error]", e));
     }
 
     // ==========================================
