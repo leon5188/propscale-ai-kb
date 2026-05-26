@@ -28,7 +28,7 @@ export async function POST(req: Request) {
   });
 
   try {
-    const body = await req.json();
+    const body = await req.json() as Record<string, any>;
     
     // Extract Contact and Location IDs
     const contactId = body.contact_id || (body.customData && body.customData.contact_id);
@@ -112,7 +112,7 @@ export async function POST(req: Request) {
           }
         }
 
-        let fieldDetails = [];
+        const fieldDetails = [];
         let hasZestimate = false;
         let intelligenceSummary = "";
 
@@ -250,8 +250,9 @@ ${contextText}`
       getLeadIntelligence(contactAddress).then(async (intel) => {
         if (intel) {
           const meta = await getGHLCustomFields(locationId);
-          const scoreField = meta?.customFields?.find((f: any) => f.name.includes('PropScale Score'))?.id;
-          const intelField = meta?.customFields?.find((f: any) => f.name.includes('PropScale Intelligence'))?.id;
+          interface GHLField { id: string; name: string }
+          const scoreField = meta?.customFields?.find((f: GHLField) => f.name.includes('PropScale Score'))?.id;
+          const intelField = meta?.customFields?.find((f: GHLField) => f.name.includes('PropScale Intelligence'))?.id;
           
           if (scoreField || intelField) {
             const fieldsToUpdate = [];

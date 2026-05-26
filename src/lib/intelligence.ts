@@ -31,7 +31,8 @@ export async function getLeadIntelligence(address: string) {
     });
 
     const searchData = await exaResponse.json();
-    const contents = searchData.results?.map((r: any) => r.text).join('\n\n') || "No deep data found.";
+    interface ExaResult { text: string }
+    const contents = searchData.results?.map((r: ExaResult) => r.text).join('\n\n') || "No deep data found.";
 
     // Stage 2: GPT Synthesis and Scoring
     const completion = await openai.chat.completions.create({

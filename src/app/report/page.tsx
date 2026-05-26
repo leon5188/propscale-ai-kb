@@ -7,8 +7,8 @@ import {
   AreaChart, Area
 } from 'recharts';
 import { 
-  TrendingDown, Zap, Clock, ShieldAlert, CheckCircle2, 
-  ArrowRight, PhoneCall, Mail, MousePointer2, AlertTriangle, Search, Info
+  TrendingDown, Zap, ShieldAlert, CheckCircle2, 
+  ArrowRight
 } from 'lucide-react';
 
 const leadLeakData = [
@@ -87,7 +87,7 @@ function ReportContent() {
                 <div className="p-2 bg-red-50 rounded-lg">
                   <TrendingDown className="text-red-600 w-6 h-6" />
                 </div>
-                <h2 className="text-2xl font-bold">The "Lead Leak" Phenomenon</h2>
+                <h2 className="text-2xl font-bold">The &quot;Lead Leak&quot; Phenomenon</h2>
               </div>
               
               <p className="text-slate-600 mb-8 leading-relaxed">

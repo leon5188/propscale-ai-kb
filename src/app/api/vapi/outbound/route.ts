@@ -68,7 +68,7 @@ export async function POST(req: Request) {
           }
         }
 
-        let fieldDetails = [];
+        const fieldDetails = [];
         if (address) fieldDetails.push(`Address: ${address}`);
         
         for (const field of contactCustomFields) {

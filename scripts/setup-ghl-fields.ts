@@ -40,7 +40,8 @@ async function setupFields(locationId: string) {
         })
       });
 
-      const data = await response.json() as any;
+      interface GHLResponse { id?: string; message?: string }
+      const data = await response.json() as GHLResponse;
 
       if (response.ok) {
         console.log(`✅ Created field: ${field.name} (ID: ${data.id})`);
