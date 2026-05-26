@@ -101,3 +101,22 @@
     @apply bg-background text-foreground antialiased;
   }
 }
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.5); }
+}
+
+@keyframes progress {
+  0% { width: 0%; }
+  100% { width: 75%; }
+}
+
+.animate-wave {
+  animation: wave 1s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+.animate-progress {
+  animation: progress 2s ease-out forwards;
+}

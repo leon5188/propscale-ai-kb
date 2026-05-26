@@ -1,110 +1,145 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Zap, ShieldCheck, TrendingUp, Search } from 'lucide-react';
+import { ArrowRight, Zap, Search, MessageSquare, ShieldCheck, Database } from 'lucide-react';
 
 const Hero = () => {
   const [chatStep, setChatStep] = useState(0);
 
-  // Chat animation simulation
   useEffect(() => {
     const interval = setInterval(() => {
       setChatStep((prev) => (prev + 1) % 4);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <section className="relative bg-slate-900 pt-32 pb-40 overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600 rounded-full blur-[120px]"></div>
-      </div>
+    <section className="relative bg-white pt-32 pb-24 overflow-hidden border-b border-slate-100">
+      {/* Background Grid Pattern */}
+      <div className="absolute inset-0 z-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', size: '20px 20px' }}></div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="flex flex-wrap items-center -mx-4">
-          <div className="w-full lg:w-3/5 px-4 mb-16 lg:mb-0">
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center px-4 py-2 mb-8 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 font-bold text-xs uppercase tracking-widest">
-                <Zap className="w-4 h-4 mr-2 fill-current" />
-                Real-Time Property & Market Intelligence Built-In
-              </div>
-              <h1 className="text-5xl lg:text-7xl font-black text-white mb-8 leading-tight tracking-tight">
-                Don&apos;t Let Leads Die in the <span className="text-blue-500">First 5 Minutes.</span>
-              </h1>
-              <p className="text-xl text-slate-400 mb-12 leading-relaxed max-w-2xl">
-                The only B2B AI assistant that runs background checks on properties instantly. 
-                <span className="text-white font-semibold"> 100% Brand Voice cloning. Native CRM integration.</span>
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-6">
-                <button className="flex items-center justify-center px-10 py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition duration-300 shadow-xl shadow-blue-600/20 active:scale-95 group">
-                  Book Your Tech Audit
-                  <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                </button>
-                <div className="flex items-center gap-4 px-6 text-slate-500 border-l border-slate-800 ml-0 sm:ml-4">
-                  <div className="flex -space-x-2">
-                    {[1,2,3].map(i => (
-                      <div key={i} className="w-8 h-8 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center text-[10px] font-bold text-white">
-                        {String.fromCharCode(64+i)}
-                      </div>
-                    ))}
-                  </div>
-                  <span className="text-sm font-bold tracking-tight uppercase">Trusted by Top Agencies</span>
-                </div>
-              </div>
-            </div>
+        <div className="text-center max-w-4xl mx-auto mb-16">
+          <div className="inline-flex items-center px-3 py-1 mb-8 rounded-full bg-slate-100 border border-slate-200 text-slate-600 font-bold text-[10px] uppercase tracking-[0.2em]">
+            <Zap className="w-3 h-3 mr-2 fill-slate-400 text-slate-400" />
+            The Modern Real Estate Utility
           </div>
+          <h1 className="text-6xl md:text-8xl font-black text-slate-900 mb-8 leading-[0.9] tracking-tighter">
+            AI Agents for Every <br />
+            <span className="text-blue-600">Property Inquiry.</span>
+          </h1>
+          <p className="text-xl md:text-2xl text-slate-500 mb-12 leading-relaxed max-w-2xl mx-auto font-medium">
+            Deploy custom AI agents for your listings in minutes. 
+            Native Zillow penetration and 100% brand voice cloning built-in.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="flex items-center justify-center px-10 py-5 bg-slate-900 text-white font-bold rounded-2xl hover:bg-black transition duration-300 shadow-2xl shadow-slate-900/20 active:scale-95 group">
+              Deploy Your Engine
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <button className="flex items-center justify-center px-10 py-5 bg-white text-slate-600 border border-slate-200 font-bold rounded-2xl hover:bg-slate-50 transition duration-300 active:scale-95">
+              Watch Demo
+            </button>
+          </div>
+        </div>
 
-          <div className="w-full lg:w-2/5 px-4">
-            <div className="relative">
-              {/* Animated Chat Mockup */}
-              <div className="relative bg-slate-800 rounded-[32px] p-6 border border-slate-700 shadow-2xl">
-                <div className="flex items-center gap-3 mb-8 pb-4 border-b border-slate-700/50">
-                  <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-black text-white tracking-tighter">P</div>
-                  <div>
-                    <p className="text-sm font-black text-white leading-none">PropScale Assistant</p>
-                    <p className="text-[10px] text-green-400 font-bold uppercase tracking-widest mt-1 flex items-center gap-1">
-                      <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
-                      Market Core Active
-                    </p>
-                  </div>
-                </div>
+        {/* Logo Marquee / Trusted By */}
+        <div className="mb-24">
+          <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-8">Powering Conversations Across</p>
+          <div className="flex flex-wrap justify-center items-center gap-12 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+             <div className="flex items-center gap-2 font-black text-2xl tracking-tighter">Zillow</div>
+             <div className="flex items-center gap-2 font-black text-2xl tracking-tighter italic text-blue-600">MLS</div>
+             <div className="flex items-center gap-2 font-black text-2xl tracking-tighter">Redfin</div>
+             <div className="flex items-center gap-2 font-black text-2xl tracking-tighter">Realtor.com</div>
+          </div>
+        </div>
 
-                <div className="space-y-6 min-h-[300px]">
-                  {/* Lead Message */}
-                  <div className={`flex flex-col items-start transition-all duration-500 ${chatStep >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                    <div className="bg-slate-700 text-white p-4 rounded-2xl rounded-tl-none max-w-[80%] text-sm font-medium">
-                      Hey, how much is my house at 816 S Stoneman Ave worth?
+        {/* Centered UI Mockup */}
+        <div className="relative max-w-5xl mx-auto group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-[40px] blur-2xl opacity-10 group-hover:opacity-20 transition duration-1000"></div>
+          
+          <div className="relative bg-white rounded-[40px] border border-slate-200 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] overflow-hidden">
+            {/* Window Header */}
+            <div className="bg-slate-50 px-8 py-4 border-b border-slate-100 flex items-center justify-between">
+              <div className="flex gap-2">
+                <div className="w-3 h-3 bg-slate-200 rounded-full"></div>
+                <div className="w-3 h-3 bg-slate-200 rounded-full"></div>
+                <div className="w-3 h-3 bg-slate-200 rounded-full"></div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Assistant Active: 816 S Stoneman Ave</span>
+              </div>
+              <div className="w-12"></div>
+            </div>
+
+            <div className="flex flex-col lg:flex-row min-h-[500px]">
+              {/* Left: Input/Status */}
+              <div className="w-full lg:w-1/3 border-r border-slate-100 p-8 bg-slate-50/50">
+                 <div className="space-y-8">
+                   <div>
+                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Identity Core</p>
+                     <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-black text-white italic">P</div>
+                        <div>
+                          <p className="text-xs font-bold text-slate-900 leading-none">PropScale V2</p>
+                          <p className="text-[10px] text-slate-400 font-medium mt-1">Cloning Agent: Sarah</p>
+                        </div>
+                     </div>
+                   </div>
+
+                   <div>
+                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Data Bridges</p>
+                     <div className="space-y-3">
+                        <div className="flex items-center justify-between text-xs font-bold p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
+                          <span className="flex items-center gap-2"><Database className="w-3 h-3 text-slate-400" /> Zillow</span>
+                          <span className="text-green-500">Live</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs font-bold p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
+                          <span className="flex items-center gap-2"><Search className="w-3 h-3 text-slate-400" /> Exa Search</span>
+                          <span className="text-green-500">Live</span>
+                        </div>
+                     </div>
+                   </div>
+                   
+                   <div className="p-4 bg-blue-600 rounded-2xl text-white shadow-xl shadow-blue-200">
+                     <p className="text-[10px] font-black opacity-60 uppercase tracking-widest mb-2">Live Insight</p>
+                     <p className="text-xs font-bold leading-relaxed">
+                        &quot;Lead is asking about valuation. Pulling real-time comparables and 2024 permit data.&quot;
+                     </p>
+                   </div>
+                 </div>
+              </div>
+
+              {/* Right: Message Simulation */}
+              <div className="flex-1 p-8 bg-white relative">
+                <div className="space-y-8 max-w-lg mx-auto">
+                  {/* Message 1 */}
+                  <div className={`transition-all duration-700 ${chatStep >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+                    <div className="bg-slate-100 text-slate-700 p-5 rounded-3xl rounded-tl-none font-medium text-sm leading-relaxed">
+                      Hey! Is 816 S Stoneman Ave still available? Also, do you know what the current market value is?
                     </div>
                   </div>
 
-                  {/* AI Processing */}
+                  {/* Typing Indicator */}
                   <div className={`flex items-center gap-2 transition-all duration-300 ${chatStep === 2 ? 'opacity-100' : 'opacity-0'}`}>
-                    <Search className="w-4 h-4 text-blue-400 animate-spin" />
-                    <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Scanning Property Intelligence...</span>
+                    <div className="flex gap-1">
+                      <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce"></div>
+                      <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                      <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                    </div>
+                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Agent Thinking...</span>
                   </div>
 
                   {/* AI Response */}
-                  <div className={`flex flex-col items-end transition-all duration-500 delay-300 ${chatStep >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                    <div className="bg-blue-600 text-white p-4 rounded-2xl rounded-tr-none max-w-[85%] text-sm font-bold shadow-lg">
-                      I just pulled the data! Market estimates it at $852,000. I also noticed you had a roof permit in 2024—nice upgrade! Do you want a professional valuation?
+                  <div className={`transition-all duration-700 delay-300 ${chatStep >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+                    <div className="bg-blue-600 text-white p-5 rounded-3xl rounded-tr-none font-bold text-sm leading-relaxed shadow-xl shadow-blue-200">
+                      Hi there! It sure is. I just scanned the local market—Zillow estimates it at $852k, and I noticed the new roof from 2024. Would you like Sarah to give you a more precise valuation tomorrow?
                     </div>
-                    <p className="text-[10px] text-slate-500 mt-2 font-bold uppercase">Sent via PropScale • Instant</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Data Badge Floating */}
-              <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-slate-100 animate-bounce">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <TrendingUp className="text-green-600 w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase leading-none mb-1">PropScale Score</p>
-                    <p className="text-xl font-black text-slate-900 leading-none">94/100</p>
+                    <div className="mt-3 flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                       <MessageSquare className="w-3 h-3" /> SMS Delivered • 2s response
+                    </div>
                   </div>
                 </div>
               </div>
