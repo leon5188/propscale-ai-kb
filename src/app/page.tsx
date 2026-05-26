@@ -5,6 +5,7 @@ import Solution from '@/components/landing/Solution';
 import Tech from '@/components/landing/Tech';
 import ROI from '@/components/landing/ROI';
 import CTA from '@/components/landing/CTA';
+import Onboarding from '@/components/landing/Onboarding';
 
 const Navbar = () => (
   <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
@@ -14,12 +15,12 @@ const Navbar = () => (
         <span className="text-xl font-bold text-gray-900 tracking-tight">PropScale AI</span>
       </div>
       <div className="hidden md:flex items-center space-x-8 text-sm font-semibold text-gray-600">
+        <a href="#how-it-works" className="hover:text-blue-600 transition">The Setup</a>
         <a href="#problem" className="hover:text-blue-600 transition">The Problem</a>
-        <a href="#solution" className="hover:text-blue-600 transition">The Engine</a>
-        <a href="#how-it-works" className="hover:text-blue-600 transition">How it Works</a>
+        <a href="#solution" className="hover:text-blue-600 transition">The Superpowers</a>
       </div>
       <button className="px-6 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition text-sm">
-        Get Started
+        Start Now
       </button>
     </div>
   </nav>
@@ -33,30 +34,28 @@ const Footer = () => (
         <span className="text-lg font-bold text-gray-900 tracking-tight">PropScale AI</span>
       </div>
       <p className="text-gray-500 text-sm">
-        © 2026 PropScale AI. Specifically built for GoHighLevel users.
+        © 2026 PropScale AI. Built for high-performance GoHighLevel agencies.
       </p>
-      <div className="mt-4 flex justify-center space-x-6 text-xs font-semibold text-gray-400">
-        <a href="#" className="hover:text-gray-600">Privacy Policy</a>
-        <a href="#" className="hover:text-gray-600">Terms of Service</a>
-        <a href="#" className="hover:text-gray-600">Support</a>
-      </div>
     </div>
   </footer>
 );
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       <Navbar />
       <main>
         <Hero />
+        <div id="how-it-works">
+          <Onboarding />
+        </div>
         <div id="problem">
           <Problem />
         </div>
         <div id="solution">
           <Solution />
         </div>
-        <div id="how-it-works">
+        <div id="tech">
           <Tech />
         </div>
         <ROI />
