@@ -40,7 +40,7 @@ export const PropertyReport: React.FC<PropertyReportProps> = ({
 
       {/* Header: Agent Branding */}
       <Sequence from={0} durationInFrames={300}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '80px', opacity: titleOp, transform: \`translateY(\${(1 - titleY) * 20}px)\` }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '80px', opacity: titleOp, transform: `translateY(${(1 - Number(titleY)) * 20}px)` }}>
           <div style={{ width: '80px', height: '80px', backgroundColor: '#2563eb', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '40px', fontWeight: 900, fontStyle: 'italic' }}>
             P
           </div>
@@ -55,12 +55,12 @@ export const PropertyReport: React.FC<PropertyReportProps> = ({
       <Sequence from={15} durationInFrames={300}>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <p style={{ fontSize: '24px', color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '0.3em', fontWeight: 900, marginBottom: '20px', opacity: titleOp }}>Property Intelligence Report</p>
-          <h1 style={{ fontSize: '72px', fontWeight: 900, lineHeight: 1.1, letterSpacing: '-0.02em', marginBottom: '40px', opacity: titleOp, transform: \`translateY(\${(1 - titleY) * 40}px)\` }}>
+          <h1 style={{ fontSize: '72px', fontWeight: 900, lineHeight: 1.1, letterSpacing: '-0.02em', marginBottom: '40px', opacity: titleOp, transform: `translateY(${(1 - Number(titleY)) * 40}px)` }}>
             {address}
           </h1>
 
           {/* Zestimate Reveal */}
-          <div style={{ opacity: zestimateOp, transform: \`scale(\${zestimateScale})\`, transformOrigin: 'left center', marginBottom: '60px' }}>
+          <div style={{ opacity: zestimateOp, transform: `scale(${Number(zestimateScale)})`, transformOrigin: 'left center', marginBottom: '60px' }}>
             <div style={{ display: 'inline-block', padding: '12px 24px', backgroundColor: 'rgba(255,255,255,0.1)', border: '2px solid rgba(255,255,255,0.2)', borderRadius: '100px', fontSize: '20px', fontWeight: 900, letterSpacing: '0.1em', marginBottom: '20px' }}>
               CURRENT ESTIMATED VALUE
             </div>
@@ -70,7 +70,7 @@ export const PropertyReport: React.FC<PropertyReportProps> = ({
           </div>
 
           {/* Deep Intel Cards */}
-          <div style={{ display: 'flex', gap: '40px', opacity: intelOp, transform: \`translateY(\${(1 - intelY) * 40}px)\` }}>
+          <div style={{ display: 'flex', gap: '40px', opacity: intelOp, transform: `translateY(${(1 - Number(intelY)) * 40}px)` }}>
             
             <div style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '40px', borderRadius: '40px', backdropFilter: 'blur(20px)' }}>
                <p style={{ fontSize: '18px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 900, marginBottom: '20px' }}>Exa AI Permit Scan</p>
