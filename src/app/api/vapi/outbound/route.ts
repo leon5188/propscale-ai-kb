@@ -114,7 +114,7 @@ export async function POST(req: Request) {
             ],
           },
           voice: {
-            provider: "elevenlabs",
+            provider: "11labs",
             voiceId: "sarah", 
           },
         },
